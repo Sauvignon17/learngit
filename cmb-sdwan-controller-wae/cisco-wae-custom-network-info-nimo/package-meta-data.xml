@@ -1,0 +1,12 @@
+<ncs-package xmlns="http://tail-f.com/ns/ncs-packages">
+    <name>cisco-wae-custom-network-nimo</name>
+    <package-version>1.0.0</package-version>
+    <description>Custom netork infomation</description>
+    <ncs-min-version>4.2</ncs-min-version>
+    <component>
+        <name>cisco-wae-custom-network-nimo</name>
+        <application>
+            <python-class-name>custom_network_info.CustomNetworkNIMO</python-class-name>
+        </application>
+    </component>
+</ncs-package>

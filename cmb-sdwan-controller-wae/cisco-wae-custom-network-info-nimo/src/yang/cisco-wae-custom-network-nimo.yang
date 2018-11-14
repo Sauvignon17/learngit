@@ -1,0 +1,117 @@
+module cisco-wae-custom-network-nimo {
+
+    namespace "http://cisco.com/ns/wae/custom-network-nimo";
+
+    prefix custom-network-nimo;
+
+    import ietf-inet-types { prefix inet; }
+    import ietf-yang-types { prefix yang; }
+    import tailf-common { prefix tailf; }
+    import tailf-ncs { prefix ncs; }
+    import cisco-wae { prefix wae; }
+    import cisco-wae-nimo { prefix nimo; }
+
+    organization "Cisco Systems";
+
+    description
+        "This is python NIMO skeleton.";
+
+    revision 2016-12-15 {
+        description
+                "First release.";
+    }
+
+    typedef capacity-type {
+        type decimal64 {
+            fraction-digits 2;
+        }
+    }
+    typedef interface-name {
+        tailf:info "e.g., if{SH-P01|GigabitEthernet0/0/0/2} ";
+        type string {
+            pattern 'if\{(.)+\|(.)+\}';
+        }
+    }
+
+    grouping config-python-nimo {
+        container advanced {
+            leaf operational-data-network {
+                mandatory true;
+                type leafref {
+                    path "/wae:networks/wae:network/wae:name";
+                }
+            }
+            container capacity-setting {
+                leaf default-capacity {
+                    type capacity-type;
+                }
+
+                list interface-capacity {
+                    key interface;
+                    leaf interface {
+                        type interface-name;
+                    }
+                    leaf capacity {
+                        mandatory true;
+                        type capacity-type;
+                    }
+                }
+
+//                container nodes {
+//                    list node {
+//                        key name;
+//                        leaf name {
+//                            type leafref {
+//                                path "../../../../../../../wae:model/wae:nodes/wae:node/wae:name";
+//                            }
+//                        }
+//                        container interfaces {
+//                            list interface {
+//                                key name;
+//                                leaf name {
+//                                    type leafref {
+//                                        path "deref(../../../name)/../wae:interfaces/wae:interface/wae:name";
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+            }
+        }
+    }
+
+    grouping config-python-nimo-output {
+        leaf result {
+            tailf:info "A sample output boolean flag";
+            type boolean;
+            default false;
+        }
+        leaf message {
+            tailf:info "A sample output string message";
+            type string;
+        }
+    }
+
+    augment "/wae:networks/wae:network"
+    + "/wae:nimo/wae:nimo-type" {
+
+        case custom-network-info {
+
+            container custom-network-info {
+
+                tailf:info "The python NIMO skeleton.";
+
+                uses nimo:single-source;
+                uses config-python-nimo;
+
+                tailf:action run {
+                    tailf:actionpoint customize-network-info-action-point;
+                    output {
+                        uses config-python-nimo-output;
+                    }
+                }
+            }
+        }
+    }
+}

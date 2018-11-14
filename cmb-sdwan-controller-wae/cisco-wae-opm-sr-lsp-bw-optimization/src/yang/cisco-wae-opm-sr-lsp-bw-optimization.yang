@@ -1,0 +1,179 @@
+module cisco-wae-opm-sr-lsp-bw-optimization {
+
+    namespace "http://cisco.com/ns/wae/opm/sr-lsp-bw-optimization";
+    prefix "wae-opm-sr-lsp-bw-optimization";
+
+    import ietf-yang-types { prefix yang; }
+    import tailf-common { prefix tailf; }
+    import tailf-ncs { prefix ncs; }
+    import cisco-wae { prefix wae; }
+
+    organization "Cisco Systems";
+
+    description
+        "This is a sr-te path compute module.";
+
+    revision 2018-07-15 {
+        description
+                "First release.";
+    }
+    typedef util-percent {
+        tailf:info "Max Utilization % Along Path (default: 80.0%)";
+        type decimal64 {
+            fraction-digits 2;
+            range "0..100";
+        }
+        default "80.00";
+    }
+
+    typedef interface-keystr {
+        tailf:info "e.g.,[ if{SH-P01|GigabitEthernet0/0/0/2} ]";
+        type string {
+            pattern 'if\{(.)+\|(.)+\}';
+        }
+    }
+
+    typedef lsp-keystr {
+        tailf:info "e.g.,[ lsp{SZ-PE01|tunnel-te1000} ]";
+        type string {
+            pattern 'lsp\{(.)+\|(.)+\}';
+        }
+    }
+    typedef interface-name {
+        type union {
+            type interface-keystr;
+        }
+    }
+
+    typedef lsp-name {
+        type union {
+            type lsp-keystr;
+        }
+    }
+    grouping config-opm-status {
+        container status {
+            leaf active {
+                tailf:info "True if the OPM is active";
+                type boolean;
+            }
+            leaf last-run {
+                tailf:info "Timestamp when the OPM was invoked last";
+                type yang:date-and-time;
+            }
+            leaf last-successful-run {
+                tailf:info "Timestamp of the OPM's last successful run";
+                type yang:date-and-time;
+            }
+        }
+    }
+
+    augment "/wae:networks/wae:network/wae:opm" {
+        container sr-lsp-bw-optimization {
+            tailf:info "The sr lsp optimize module";
+            uses config-opm-status;
+
+            tailf:action run {
+                tailf:actionpoint cisco-wae-opm-sr-lsp-bw-optimization-action-point;
+                input {
+                    list optimize-group {
+                        key name;
+                        leaf name {
+                            mandatory true;
+                            type string;
+                        }
+                        container interfaces {
+  	                         leaf-list interface {
+                            	min-elements 1;
+                                type interface-name;
+                            }
+                        }
+
+                        leaf max-util-percent {
+                            tailf:info "Reduce congestion on interfaces with utilization";
+                            type util-percent;
+                        }
+                    }
+
+                    container lsps {
+                        presence true;
+                        leaf-list lsp {
+                            min-elements 1;
+                            type lsp-name;
+                        }
+                        leaf method {
+                            type enumeration {
+                                enum "fix";
+                                enum "reroute";
+                            }
+                            default "reroute";
+                        }
+                    }
+                    leaf max-util-percent {
+                            tailf:info "Reduce congestion on interfaces with utilization";
+                            type util-percent;
+                    }
+                    leaf recompute-optimized-lsp-inactive-path{
+                            type boolean;
+                            default false;
+                    }
+                }
+                output {
+                    leaf result {
+                        type boolean;
+                    }
+                    leaf-list error-message{
+                        type string;
+                    }
+                    leaf network-info-timestamp {
+                        tailf:info "Timestamp of the network infomation last collected successfully";
+                        type yang:date-and-time;
+                    }
+                    list optimize-group {
+                        key name;
+                        leaf name {
+                            type string;
+                        }
+                        leaf target-utilization{
+                            type util-percent;
+                        }
+                        list interface {
+                            key name;
+                            leaf name {
+                                type interface-name;
+                            }
+                            leaf util-before {
+                                type util-percent;
+                            }
+                            leaf util-after {
+                                type util-percent;
+                            }
+                            leaf state {
+                                type boolean;
+                            }
+                        }
+                    }
+
+                    list modified-lsp {
+                        key name;
+                        leaf name {
+                            type lsp-name;
+                        }
+                        list lsp-path {
+                            key path-option;
+                            leaf path-option {
+                                type uint16;
+                            }
+
+                            leaf-list segment-list {
+                                type string;
+                            }
+                            leaf-list interfaces {
+                                type interface-name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

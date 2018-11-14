@@ -1,0 +1,42 @@
+
+This is a generated python NIMO package, made by:
+
+ wae-make-package --python-nimo-skeleton cisco-wae-custom-network-info-nimo
+
+It contains a sample Yang model and the implementation for a sample python
+NIMO invoked through an action point. They serve as an example to get
+you going.
+
+- In package-meta-data.xml, the <name> is the NIMO name.
+
+- The python classes executed by the NIMO exist in python/pyNIMOSkeleton.py
+  and are named PyNIMOSkeleton and PyNIMOSkeletonAction.
+
+- The PyNIMOCapabilities class specifies the leaf level elements in the WAE
+  model that this NIMO can add, delete or modify and the associated NIMO
+  operation: 'collect_only' or 'collect_and_deploy'.
+
+- If the python file or classes are renamed, the <python-class-name> in
+  package-meta-data.xml needs to be updated to replace
+  pyNIMOSkeleton.PyNIMOSkeleton with the new names.
+
+- The action point triggered by this sample module is called
+  python-nimo-skeleton-action-point and is present in the Yang model.
+  To rename the action point, an update is needed to python/pyNIMOSkeleton.py
+  and src/cisco-wae-lsp-view-nimo.yang files.
+
+- In this package,
+
+    The PyNIMOSkeleton class implements the registration of the action point.
+
+    The PyNIMOSkeletonAction class, derived from OpmActionBase, implements a
+    python NIMO skeleton which:
+    - Takes as inputs a boolean flag and string value.
+    - Copies them over to output attributes, a boolean result and a string
+      message.
+    - Uses the OPM API to find a network interface 'to_cr1.hst' on node called
+     'cr1.atl' and replace its description with the input string value.
+
+The included src/Makefile can be used to compile the Yang model and build the
+fxs file, or you can use the --build option of wae-make-package.
+

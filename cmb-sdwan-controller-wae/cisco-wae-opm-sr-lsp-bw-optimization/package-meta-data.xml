@@ -1,0 +1,12 @@
+<ncs-package xmlns="http://tail-f.com/ns/ncs-packages">
+    <name>cisco-wae-opm-sr-lsp-bw-optimize</name>
+    <package-version>1.0.0</package-version>
+    <description>LSP optimization for LSP with SR type</description>
+    <ncs-min-version>4.2</ncs-min-version>
+    <component>
+        <name>lsp-bw-optimize-action</name>
+        <application>
+            <python-class-name>lsp_bw_optimization.SRLspBwOptimize</python-class-name>
+        </application>
+    </component>
+</ncs-package>

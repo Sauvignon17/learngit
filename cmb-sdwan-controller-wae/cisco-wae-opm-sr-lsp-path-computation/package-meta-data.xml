@@ -1,0 +1,12 @@
+<ncs-package xmlns="http://tail-f.com/ns/ncs-packages">
+    <name>cisco-wae-opm-sr-lsp-path-compute</name>
+    <package-version>1.0.0</package-version>
+    <description>Path compute for LSP with SR type</description>
+    <ncs-min-version>4.2</ncs-min-version>
+    <component>
+        <name>sr-lsp-path-compute-action</name>
+        <application>
+            <python-class-name>sr_te_path_computation.SRLspPathCompute</python-class-name>
+        </application>
+    </component>
+</ncs-package>

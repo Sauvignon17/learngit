@@ -1,0 +1,185 @@
+module cisco-wae-opm-sr-lsp-path-computation {
+
+    namespace "http://cisco.com/ns/wae/opm/sr-lsp-path-computation";
+    prefix "wae-opm-sr-lsp-path-computation";
+
+    import ietf-yang-types { prefix yang; }
+    import tailf-common { prefix tailf; }
+    import tailf-ncs { prefix ncs; }
+    import cisco-wae { prefix wae; }
+
+    organization "Cisco Systems";
+
+    description
+        "This is a sr-te path compute module.";
+
+    revision 2018-07-15 {
+        description
+                "First release.";
+    }
+
+    typedef node-name {
+        tailf:info "e.g., node{SZ-P03} ";
+        type string {
+            pattern 'node\{(.)+\}';
+        }
+    }
+    typedef interface-name {
+        tailf:info "e.g., if{SH-P01|GigabitEthernet0/0/0/2} ";
+        type string {
+            pattern 'if\{(.)+\|(.)+\}';
+        }
+    }
+
+    typedef lsp-name {
+        tailf:info "e.g., lsp{SZ-PE01|tunnel-te1000} ";
+        type string {
+            pattern 'lsp\{(.)+\|(.)+\}';
+        }
+    }
+
+    typedef inclusion-name {
+        type union {
+            type node-name;
+            type interface-name;
+        }
+    }
+    typedef avoidance-name {
+        type union {
+            type node-name;
+            type interface-name;
+        }
+    }
+
+    grouping config-opm-status {
+        container status {
+            leaf active {
+                tailf:info "True if the OPM is active";
+                type boolean;
+            }
+            leaf last-run {
+                tailf:info "Timestamp when the OPM was invoked last";
+                type yang:date-and-time;
+            }
+            leaf last-successful-run {
+                tailf:info "Timestamp of the OPM's last successful run";
+                type yang:date-and-time;
+            }
+        }
+    }
+
+    grouping constraints-grouping {
+        container constraints {
+            presence true;
+            leaf-list inclusion {
+                tailf:info "Constraint: the path must contain the specified nodes or interfaces
+                                as order. e.g.,[ node{SZ-P01} if{SH-P01|GigabitEthernet0/0/0/2}
+                                ]";
+                type inclusion-name;
+            }
+
+            leaf-list avoidance {
+                tailf:info "Constraint: the path must not contain the specified nodes or
+                                interfaces.e.g.,[ node{SZ-P01} if{SH-P01|GigabitEthernet0/0/0/2}
+                                ]";
+                type avoidance-name;
+            }
+
+            leaf-list affinity-inclusion {
+                type uint8;
+            }
+            leaf-list affinity-avoidance {
+                type uint8;
+            }
+
+            leaf demand-bandwidth {
+                type decimal64 {
+                    fraction-digits 2;
+                    range "0..max";
+                }
+                default "0.00";
+            }
+        }
+    }
+
+    augment "/wae:networks/wae:network/wae:opm" {
+        container sr-lsp-path-computation {
+            tailf:info "The sr-te path compute constraint module";
+            uses config-opm-status;
+
+            tailf:action run {
+                tailf:actionpoint wae-opm-sr-lsp-path-compute-action-point;
+                input {
+                    leaf source-node {
+                        tailf:info "Source node";
+                        mandatory true;
+                        type leafref {
+                            path "../../../../wae:model/wae:nodes/wae:node/wae:name";
+                        }
+                    }
+                    leaf destination-node {
+                        tailf:info "Destination node";
+                        mandatory true;
+                        type leafref {
+                            path "../../../../wae:model/wae:nodes/wae:node/wae:name";
+                        }
+                    }
+                    leaf metric {
+                        tailf:info "Optimization Metric (default: te)";
+                        type enumeration {
+                            enum "igp";
+                            enum "te";
+                            enum "delay";
+                        }
+                        default "te";
+                    }
+
+                    container primary-path {
+                        uses constraints-grouping;
+                    }
+                    container backup-path {
+                        presence true;
+                        uses constraints-grouping;
+                    }
+                }
+                output {
+                    leaf result {
+                        type boolean;
+                    }
+
+                    leaf-list error-message{
+                        type string;
+                    }
+
+                    leaf network-info-timestamp {
+                        tailf:info "Timestamp of the network infomation last collected successfully";
+                        type yang:date-and-time;
+                    }
+                    container primary-path {
+                        leaf-list segment-list {
+                            type string;
+                        }
+                        leaf-list interfaces {
+                            type interface-name;
+                        }
+                        leaf state {
+                            type boolean;
+                        }
+                    }
+                    container backup-path {
+                        presence true;
+                        leaf-list segment-list {
+                            type string;
+                        }
+                        leaf-list interfaces {
+                            type interface-name;
+                        }
+                        leaf state {
+                            type boolean;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

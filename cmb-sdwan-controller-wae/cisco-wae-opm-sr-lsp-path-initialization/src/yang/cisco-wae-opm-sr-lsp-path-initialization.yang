@@ -1,0 +1,99 @@
+module cisco-wae-opm-sr-lsp-path-initialization {
+
+    namespace "http://cisco.com/ns/wae/opm/sr-lsp-path-initialization";
+    prefix "wae-opm-sr-lsp-path-initialization";
+
+    import ietf-yang-types { prefix yang; }
+    import tailf-common { prefix tailf; }
+    import tailf-ncs { prefix ncs; }
+    import cisco-wae { prefix wae; }
+    import ietf-inet-types { prefix inet; }
+
+    organization "Cisco Systems";
+
+    description
+        "This is a sr-te path compute module.";
+
+    revision 2018-07-15 {
+        description
+                "First release.";
+    }
+
+
+    typedef interface-name {
+        tailf:info "e.g., if{SH-P01|GigabitEthernet0/0/0/2} ";
+        type string {
+            pattern 'if\{(.)+\|(.)+\}';
+        }
+    }
+
+
+    grouping config-opm-status {
+        container status {
+            leaf active {
+                tailf:info "True if the OPM is active";
+                type boolean;
+            }
+            leaf last-run {
+                tailf:info "Timestamp when the OPM was invoked last";
+                type yang:date-and-time;
+            }
+            leaf last-successful-run {
+                tailf:info "Timestamp of the OPM's last successful run";
+                type yang:date-and-time;
+            }
+        }
+    }
+
+
+    augment "/wae:networks/wae:network/wae:opm" {
+        container sr-lsp-path-initialization {
+            tailf:info "Translate LSP segment-list to passed interfaces";
+            uses config-opm-status;
+
+            tailf:action run {
+                tailf:actionpoint wae-opm-sr-lsp-path-init-action-point;
+                input {
+                    leaf source-node {
+                        tailf:info "Source node";
+                        mandatory true;
+                        type leafref {
+                            path "../../../../wae:model/wae:nodes/wae:node/wae:name";
+                        }
+                    }
+                    leaf destination-node {
+                        tailf:info "Destination node";
+                        mandatory true;
+                        type leafref {
+                            path "../../../../wae:model/wae:nodes/wae:node/wae:name";
+                        }
+                    }
+                    leaf-list segment-list{
+                        min-elements 1;
+                        max-elements 6;
+                        type inet:ipv4-address;
+                    }
+                }
+                output {
+                    leaf result {
+                        type boolean;
+                    }
+                    leaf-list error-message{
+                        type string;
+                    }
+
+                    leaf network-info-timestamp {
+                        tailf:info "Timestamp of the network infomation last collected successfully";
+                        type yang:date-and-time;
+                    }
+                    leaf-list segment-list {
+                            type inet:ipv4-address;
+                        }
+                    leaf-list interfaces {
+                        type interface-name;
+                    }
+                }
+            }
+        }
+    }
+}
