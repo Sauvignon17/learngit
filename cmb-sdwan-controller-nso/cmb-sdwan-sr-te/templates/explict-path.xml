@@ -1,0 +1,28 @@
+<!-- {$DEVICE_NAME} -->
+<!-- {$EXPLICIT_PATH_NAME} -->
+<!-- {$EXPLICIT_PATH_INDEX} -->
+<!-- {$EXPLICIT_PATH_HOP_IP} -->
+
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+	<devices xmlns="http://tail-f.com/ns/ncs">
+		<device tags="nocreate">
+			<name>{$DEVICE_NAME}</name>
+			<config>
+				<explicit-path xmlns="http://tail-f.com/ned/cisco-ios-xr"
+					tags="merge">
+					<name>
+						<pathname>{$EXPLICIT_PATH_NAME}</pathname>
+						<index>
+							<index-id>{$EXPLICIT_PATH_INDEX}</index-id>
+							<keyword>next-address</keyword>
+							<hop-type>strict</hop-type>
+							<ipv4>
+								<unicast>{$EXPLICIT_PATH_HOP_IP}</unicast>
+							</ipv4>
+						</index>
+					</name>
+				</explicit-path>
+			</config>
+		</device>
+	</devices>
+</config-template>

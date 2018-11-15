@@ -1,0 +1,30 @@
+<!-- {$DEVICE_NAME} -->
+<!-- {$TUNNEL_ID} -->
+<!-- {$TUNNEL_LOOPBACK_ID} -->
+<!-- {$TUNNEL_DESTINATION} -->
+<!-- {$FORWARD_CLASS} -->
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+	<devices xmlns="http://tail-f.com/ns/ncs">
+		<device tags="nocreate">
+			<name>{$DEVICE_NAME}</name>
+			<config>
+				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+					<tunnel-te tags="merge">
+						<id>{$TUNNEL_ID}</id>
+						<ipv4>
+							<unnumbered>
+								<Loopback>{$TUNNEL_LOOPBACK_ID}</Loopback>
+							</unnumbered>
+						</ipv4>
+						<destination>{$TUNNEL_DESTINATION}</destination>
+						<forward-class when="{$FORWARD_CLASS}">{$FORWARD_CLASS}</forward-class>
+						<autoroute>
+							<announce>
+							</announce>
+						</autoroute>
+					</tunnel-te>
+				</interface>
+			</config>
+		</device>
+	</devices>
+</config-template>

@@ -1,0 +1,4155 @@
+cisco-iosxr v6.4 [2018-02-08]
+=============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+  WARNING:
+    When using cisco-iosxr with other NEDs, certain combinations of NED versions
+    may cause 'random' Exceptions. The reason for this is the introduction of
+    a new common NED component - nedcom.jar - which initially was located in
+    shared-jar, but later moved to private-jar. However, since the JAVA loader
+    looks in shared-jar directories first, a newer NED with nedcom.jar in
+    private-jar will still load another NED's older nedcom.jar in shared-jar;
+    causing a version conflict and quite possibly an Exception.
+
+    Hence, if you are using a newer NED (with private-jar/nedcom.jar) you must
+    make sure no other NEDs in your project has a shared-jar/nedcom.jar. If they
+    do, you must upgrade them to a version which also has nedcom in private-jar.
+
+    The following NED versions have their nedcom.jar in shared-jar:
+
+    a10-acos      3.6.5
+    alu-sr        6.0.2 to 6.1.1
+    cisco-asa     5.2 to to 5.2.1
+    cisco-ios     5.2.8 to 5.4.2
+    cisco-iosxr   6.0 to 6.1
+    cisco-nx      4.4.7 to 4.5.2
+    huawei-vrp    4.2.6
+
+    In short, avoid the above NED versions when using other NEDs.
+
+  WARNING:
+    Avoid using NSO-4.4.1 to NSO-4.4.1.3 due to a serious bug causing 'end-set'
+    to be lost when reading data from the device. This in turn will cause the
+    following config to be lost. Below sets use 'end-set':
+      extcommunity-set rt *
+      extcommunity-set soo *
+      rd-set *
+      prefix-set *
+      as-path-set *
+      community-set *
+    The fix is identified in NSO CHANGES by:
+      (Issue tracker: #28080, #28583, #29220)
+
+Enhancements:
+
+  - Only insert device command in output of live-status action if multiple
+     commands are executed by use if " ; ".
+    (IOSXR-444 / RT31883)
+
+  - Additions to the YANG model:
+     mpls ldp / address-family ipv4 / redistribute
+    (IOSXR-443)
+
+  - Additions to the YANG model:
+     track * / type list boolean
+     track * / type route reachability / vrf
+    (IOSXR-442 / RT31831)
+
+  - Additions to the YANG model:
+     multicast-routing / * / mdt data * immediate-switch
+     router bgp * / bgp bestpath as-path multipath-relax
+     router bgp * / neighbor * / address-family * / orf route-policy
+     router bgp * / neighbor * / bmp-activate server *
+    (IOSXR-441 / RT31826)
+
+  - API CHANGE:
+    Renamed ned-login to ned-loginscripts. Expanded and improved.
+    See README for details.
+    (IOSXR-440)
+
+Corrections:
+
+  - Added missing presence true statement in:
+     flowspec
+     interface * / ethernet udld
+     interface * / frequency synchronization
+     interface nve* / redundancy
+     interface nve* / redundancy / backbone mpls
+     interface nve* / redundancy / backbone vxlan
+     interface tunnel-te* / auto-bw
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp
+     l2vpn / redundancy
+     l2vpn / xconnect group * / mp2mp * / autodiscovery bgp
+     l2vpn / xconnect group * / mp2mp * / auto-discovery bgp / signaling-protocol bgp
+     lpts pifib hardware police
+     pce / disjoint-path
+     router bgp * / neighbor * / update in filtering
+     router hsrp / interface * / address-family ipv4 / hsrp
+     router hsrp / interface * / address-family ipv6 / hsrp
+     router mld
+     router pim
+     router-convergence
+     subscriber / redundancy
+     subscriber / redundancy / group * / interface-list
+     mpls static
+     mpls traffic-eng / gmpls optical-uni / controller * / tunnel-properties
+     mpls traffic-eng / pce / stateful-client
+     mpls traffic-eng / soft-preemption
+     track * / type line-protocol state
+     track * / type route reachability
+     telemetry policy-driven / encoder * / policy group * / transport tcp
+    (IOSXR-443)
+
+
+cisco-iosxr v6.3.10 [2018-02-02]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+  WARNING:
+    When using cisco-iosxr with other NEDs, certain combinations of NED versions
+    may cause 'random' Exceptions. The reason for this is the introduction of
+    a new common NED component - nedcom.jar - which initially was located in
+    shared-jar, but later moved to private-jar. However, since the JAVA loader
+    looks in shared-jar directories first, a newer NED with nedcom.jar in
+    private-jar will still load another NED's older nedcom.jar in shared-jar;
+    causing a version conflict and quite possibly an Exception.
+
+    Hence, if you are using a newer NED (with private-jar/nedcom.jar) you must
+    make sure no other NEDs in your project has a shared-jar/nedcom.jar. If they
+    do, you must upgrade them to a version which also has nedcom in private-jar.
+
+    The following NED versions have their nedcom.jar in shared-jar:
+
+    a10-acos      3.6.5
+    alu-sr        6.0.2 to 6.1.1
+    cisco-asa     5.2 to to 5.2.1
+    cisco-ios     5.2.8 to 5.4.2
+    cisco-iosxr   6.0 to 6.1
+    cisco-nx      4.4.7 to 4.5.2
+    huawei-vrp    4.2.6
+
+    In short, avoid the above NED versions when using other NEDs.
+
+  WARNING:
+    Avoid using NSO-4.4.1 to NSO-4.4.1.3 due to a serious bug causing 'end-set'
+    to be lost when reading data from the device. This in turn will cause the
+    following config to be lost. Below sets use 'end-set':
+      extcommunity-set rt *
+      extcommunity-set soo *
+      rd-set *
+      prefix-set *
+      as-path-set *
+      community-set *
+    The fix is identified in NSO CHANGES by:
+      (Issue tracker: #28080, #28583, #29220)
+
+Enhancements:
+
+  - Support for external login scripts using the new ned-login API.
+    See README for details.
+    (IOSXR-439)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp /
+      signaling-protocol ldp / load-balancing flow-label
+    (IOSXR-438 / RT31736)
+
+  - Additions to the YANG model:
+     router bgp * / neighbor * / address-family * / maximum-prefix discard-extra-paths
+    (IOSXR-437 / RT31732)
+
+  - Additions to the YANG model:
+     segment-routing / traffic-eng / interface *
+     segment-routing / traffic-eng / interface * / affinity / *
+    (IOSXR-436 / RT31722)
+
+Corrections:
+
+
+cisco-iosxr v6.3.9 [2018-01-26]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Do not prepend '! Generated offline' to dry-run unless verbose mode.
+    (IOSXR-434)
+
+  - Additions to the YANG model:
+     l2vpn / pw-class * / encapsulation mpls / preferred-path sr-te
+    (IOSXR-433 / RT31672)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / mac / aging / type
+    (IOSXR-432 / RT31637)
+
+Corrections:
+
+
+cisco-iosxr v6.3.8 [2018-01-21]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / ethernet oam
+     router isis * / hostname dynamic disable
+    (IOSXR-430 / RT31604)
+
+  - Disable show-error commit option for XR versions 4.x.
+    (IOSXR-426 / RT31559)
+
+  - Additions to the YANG model:
+     interface * / ipv4 address dhcp
+    (IOSXR-422 / RT31471)
+
+Corrections:
+
+  - API CHANGE:
+     flow monitor-map * / exporter *
+      Changed leaf to leaf-list to support multiple entries.
+    (IOSXR-431 / RT31611)
+
+  - Added missing presence true statements in:
+     flow exporter-map * / version v9
+    (IOSXR-427 / RT31551)
+
+
+cisco-iosxr v6.3.7 [2018-01-12]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     tpa
+    (IOSXR-422 / RT31471)
+
+Corrections:
+
+  - Rewrote code to restore ip addresses on interfaces (upon vrf change) to use
+     NAVU once again, to support dry-run on offline devices.
+    (IOSXR-425)
+
+  - Rewrote code to restore sets to use NAVU instead of show command in order
+     to support dry-run on offline devices.
+    (IOSXR-423 / RT31500)
+
+  - Use 'show inventory' on all 'cisco NCS' devices to retrieve serial.
+
+
+cisco-iosxr v6.3.6 [2018-01-11]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router bgp * / neighbor * / address-family * / remove-private-AS inbound
+    (IOSXR-421 / RT31465)
+
+  - Additions to the YANG model:
+     router bgp * / address-family * / dynamic-med interval
+    (IOSXR-420 / RT31463)
+
+Corrections:
+
+  - Fixed problem (broken banner commit) introduced with last bulk-sending fix.
+    (IOSXR-412 / RT31408)
+
+
+cisco-iosxr v6.3.5 [2018-01-10]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     segment-routing / traffic-eng / policy * / autoroute
+     segment-routing / traffic-eng / policy * / bandwidth
+    (IOSXR-419 / RT31445)
+
+  - Additions to the YANG model:
+     router pim / address-family ipv4 / mdt c-multicast-routing * / migration
+    (IOSXR-417)
+
+  - Additions to the YANG model:
+     address-family ipv4|ipv6 multicast topology *
+     dynamic-template / type ppp * / ipv6 nd nud-enable
+     multicast-routing / address-family ipv4 / mdt default mldp p2mp
+     policy-map * / monitor metric ip-cbr / rate layer3|media
+     policy-map * / monitor parameters / history
+     policy-map * / monitor parameters / interval duration
+     policy-map * / monitor parameters / timeout
+     policy-map * / react * / action
+     policy-map * / react * / alarm
+     policy-map * / react * / threshold
+     router bgp * / mvpn
+     router bgp * / neighbor <A.B.C.D/length>
+     router ospf * / area * / range *
+     rsvp / interface * / signalling refresh reduction reliable summary-refresh
+    (IOSXR-416)
+
+  - Additions to the YANG model:
+     interface * / macsec psk-keychain
+    (IOSXR-415 / RT31422)
+
+  - Additions to the YANG model:
+     key chain * / macsec / key *
+     key chain * / macsec / key * / key-string
+     key chain * / macsec / key * / lifetime
+    (IOSXR-414 / RT31417)
+
+  - Additions to the YANG model:
+     controller SONET * / report lrdi
+     controller SONET * / sts * / report pais
+     controller SONET * / sts * / report puneq
+    (IOSXR-413)
+
+  - Additions to the YANG model:
+     macsec-policy *
+     macsec-policy * / cipher-suite
+     macsec-policy * / conf-offset
+     macsec-policy * / include-icv-indicator
+     macsec-policy * / key-server-priority
+     macsec-policy * / security-policy
+     macsec-policy * / window-size
+    (IOSXR-411 / RT31397)
+
+  - Additions to the YANG model:
+     mpls traffic-eng / attribute-set * path-selection / segment-routing prepend
+     mpls traffic-eng / attribute-set * path-selection / segment-routing prepend / index *
+    (IOSXR-410 / RT31395)
+
+  - Additions to the YANG model:
+     multicast-routing / address-family ipv4 / mdt data mldp
+    (IOSXR-409 / RT31393)
+
+Corrections:
+
+  - API CHANGE
+     mpls ldp / mldp / address-family ipv4 / make-before-break delay
+      Updated API, adding support for delete delay.
+    (IOSXR-417)
+
+  - Fixed problem with bulk-sending when route-policies were split in half.
+    (IOSXR-412 / RT31408)
+
+  - API CHANGE:
+     multicast-routing / address-family ipv4 / mdt data p2mp-te
+      corrected model to match the other mdt data config.
+    (IOSXR-409 / RT31393)
+
+
+cisco-iosxr v6.3.4 [2018-01-05]
+==============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     ipv6 virtual address
+    (IOSXR-407 / RT31366)
+
+  - Additions to the YANG model:
+     ipv6 path-mtu enable|timeout
+    (IOSXR-406 / RT31365)
+
+  - Additions to the YANG model:
+     router isis / interface * / csnp-interval
+    (IOSXR-404 / RT31330)
+
+  - Implemented 'cisco-iosxr apply-device-config-settings commit-options'
+     ned-setting in order to configure optional commit arguments.
+     Default set to 'show-error', in order to show commit failures.
+    (IOSXR-403)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / interface * / mac / aging / time
+    (IOSXR-402 / RT31280)
+
+  - Improved CSCtk60033 work around patch by also including deleted interfaces
+     in the pre-commit.
+    Changed the 'cisco-iosxr-auto CSCtk60033-patch' default from true to false.
+    (IOSXR-397 / RT31225)
+
+Corrections:
+
+  - Removed compact-syntax from 'radius-server host * list'
+    (IOSXR-408 / RT31367)
+
+
+cisco-iosxr v6.3.3 [2017-12-22]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Speed optimization:
+     Lookup serial-number from devices device platform data before calling
+     show inventory|diag. If this behaviour is not desired, set the new
+     ned-setting cisco-iosxr behaviour prefer-platform-serial-number to false.
+    (IOSXR-401)
+
+  - Improved type checking by splitting previously common
+     router pim / address-family ipv4|ipv6 / rp-address *
+      into separate entries, only accepting their own IP address type.
+    (IOSXR-399 / RT31247)
+
+  - Speed optimization: use 'show inventory' for serial-number on NCS6K devices
+     instead of 'show diag'.
+    (IOSXR-398 / RT31244)
+
+  - Additions to the YANG model:
+     key chain * / accept-tolerance
+    (IOSXR-396 / RT31209)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / mac / secure / action restrict
+    (IOSXR-395 / RT31185)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / neighbor * / backup neighbor *
+     l2vpn / bridge group * / bridge-domain * / neighbor * / flooding
+     l2vpn / bridge group * / bridge-domain * / neighbor * / igmp snooping profile
+     l2vpn / bridge group * / bridge-domain * / neighbor * / mac
+    (IOSXR-394 / RT31182)
+
+  - Additions to the YANG model:
+     extcommunity-set opaque *
+    (IOSXR-376 / RT30748)
+
+Corrections:
+
+  - API CHANGE:
+     snmp-server community * / IPv6 <access-list>
+      Removed IPv6 from access-list-type and moved to a separate leaf
+       in order to support both IPv4 and IPv6 access-list in one entry.
+    (IOSXR-400 / RT31257)
+
+
+cisco-iosxr v6.3.2 [2017-12-08]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     multicast-routing / address-family ipv4 / interface all enable
+     multicast-routing / * / mdt data * route-policy|<acl-name>|immediate-switch
+    (IOSXR-391 / RT31080)
+
+  - Added 'cisco-iosxr apply-device-config-settings oob-exclusive-retries'
+     in order to configure retries (one per second) when trying to enter config
+     mode or commit when an out-of-band session is blocking with a pending
+     trial commit or in exclusive configuration mode. Default 0.
+    (IOSXR-390)
+
+  - Additions to the YANG model:
+     router static / address-family ipv4 unicast / * track
+    (IOSXR-389 / RT31044)
+
+  - Additions to the YANG model:
+     mpls ldp / mldp / address-family ipv4 / forwarding recursive
+     traffic-collector / interface *
+    (IOSXR-388 / RT31055)
+
+  - Additions to the YANG model:
+     interface * / l2transport / l2protocol cdp
+     interface * / l2transport / l2protocol stp
+     interface * / l2transport / l2protocol vtp
+     interface * / l2transport / l2protocol pvst
+     interface * / l2transport / propagate remote-status
+    (IOSXR-387 / RT31043)
+
+  - Additions to the YANG model:
+     locale language
+     aaa attribute format * / format-string * <arguments>
+     aaa group server radius * / server-private * / key
+     aaa radius attribute calling-station-id
+     aaa radius attribute nas-port-id
+    (IOSXR-386 / RT31022)
+
+  - Additions to the YANG model:
+     router isis * / address-family * / distribute-list *
+    (IOSXR-384 / RT30894)
+
+Corrections:
+
+  - API CHANGE:
+     router isis / interface * / bfd fast-detect
+      Support both ipv4 and ipv6 setting at the same time.
+    (IOSXR-392 / RT31102)
+
+
+cisco-iosxr v6.3.1 [2017-12-01]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router isis / interface * / lsp fast-flood threshold
+    (IOSXR-385 / RT30958)
+
+  - Speed optimization: use 'show inventory' for serial-number on CRS devices
+     instead of 'show diag'.
+    (IOSXR-383 / RT30909)
+
+Corrections:
+
+
+cisco-iosxr v6.3 [2017-11-24]
+=============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router isis * / address-family * / microloop avoidance segment-routing
+    (IOSXR-382 / RT30900)
+
+  - Additions to the YANG model:
+     aaa attribute format * / format-string
+     aaa group server radius * / load-balance method least-outstanding
+     class-map type control subscriber * / match authen-status
+     class-map type control subscriber * / match not
+     class-map type control subscriber * / match source-address ipv4 *
+     class-map type control subscriber * / match timer
+     dynamic-template / type ipsubscriber * / ipv6 nd dad attempts
+     dynamic-template / type ipsubscriber * / ipv6 nd ra-interval
+     dynamic-template / type ipsubscriber * / timeout idle
+     locale country
+     rpl set-exit-as-abort
+     xml agent tty / session timeout
+    (IOSXR-380 / RT30870)
+
+Corrections:
+
+  - API CHANGE:
+    Fixed problems with the new 'cisco-iosxr api edit-route-policy' ned-setting:
+     Support for extended-parser turbo-mode with api edit-route-policy.
+     Fixed bug with ned-data and NSO branches 4.1-3.x, unfortunately requiring
+      a YANG API change. New path is: route-policy-edit/route-policy{<name>}
+    (IOSXR-375 / RT30714)
+
+  - Raised NSO min version from 4.4 to 4.4.2 due to NSO bug(s).
+
+
+cisco-iosxr v6.2.13 [2017-11-20]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     pce / backoff / segment-routing / traffic-eng / affinity bit-map
+     pce / backoff / segment-routing / traffic-eng / peer ipv4 *
+     pce / backoff / segment-routing / traffic-eng / segment-list name *
+    (IOSXR-376 / RT30748)
+
+  - Added 'cisco-iosxr api edit-route-policy' ned-setting for an alternative way
+     of configuring route-policy value(s); a list sorted by line numbers.
+    (IOSXR-375 / RT30714)
+
+  - Timeout improvements for 20sec readTimeout and commit failures.
+    (IOSXR-373)
+
+  - Additions to the YANG model:
+     arp redundancy
+     cef load-balancing / algorithm adjust
+     dhcp ipv4 / profile * / broadcast-flag policy check
+     interface * / arp gratuitous ignore
+     multicast-routing / address-family ipv4 / mdt data <max-data-mdts>
+     multicast-routing / address-family ipv4 / mdt partitioned mldp
+     router msdp / cache-sa-holdtime
+     router msdp / connect-source
+    (IOSXR-372 / RT30681)
+
+Corrections:
+
+  - API CHANGE:
+     cef load-balancing / fields
+    (IOSXR-372 / RT30681)
+
+  - Additions to the YANG model:
+     router isis * / address-family * / fast-reroute per-prefix
+    (IOSXR-377 / RT30804)
+
+
+cisco-iosxr v6.2.12 [2017-11-10]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added support for rolling back admin config in revert and commit phase.
+    Added partial support for rolling back internal CSCtk60033 patch commit.
+    (IOSXR-364, IOSXR-371 / RT30646)
+
+  - Additions to the YANG model:
+     router isis * / address-family * / distance *
+    (IOSXR-370 / RT30644)
+
+  - Additions to the YANG model:
+     router isis * / address-family * / mpls traffic-eng igp-intact
+    (IOSXR-369 / RT30629)
+
+  - Additions to the YANG model:
+     multicast-routing / address-family * / accounting per-prefix forward-only
+     multicast-routing / address-family * / bgp auto-discovery / receiver-site
+     router bgp * / address-family * / mvpn single-forwarder-selection
+    (IOSXR-368 / RT30535)
+
+Corrections:
+
+   - Removed cisco-iosxr-commit-method ned-setting 'confirmed-in-commit', moved
+     trial commit from prepare to commit phase and moved confirming commit from
+     persist to commit phase; in order to solve race and timing problems.
+    (IOSXR-371 / RT30646)
+
+
+cisco-iosxr v6.2.11 [2017-11-03]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     mpls ldp / interface * / discovery hello holdtime|interval
+    (IOSXR-367 / RT30533)
+
+  - Additions to the YANG model:
+     class-map * / match traffic-class *
+     mpls ldp / session holdtime
+     policy-map * / class * / set traffic-class
+    (IOSXR-366 / RT30531)
+
+Corrections:
+
+  - Added 4 missing presence true statements in mpls ldp sub-modes:
+     mpls ldp / mldp
+     mpls ldp / mldp / address-family ipv4
+     mpls ldp / address-family ipv4
+     mpls ldp / interface * / address-family ipv4
+    (IOSXR-367 / RT30533)
+
+
+cisco-iosxr v6.2.10 [2017-10-27]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Improved CSCtk60033 work around patch by also including delete of
+     service-policy in policy-map * / class * pre-commit.
+    (IOSXR-363 / RT30438)
+
+  - Additions to the YANG model:
+     segment-routing / traffic-eng / logging
+     segment-routing / traffic-eng / segment-list name *
+     segment-routing / traffic-eng / on-demand color *
+     segment-routing / traffic-eng / policy *
+     segment-routing / traffic-eng / pcc
+    (IOSXR-362 / RT30434)
+
+  - Additions to the YANG model:
+     vrf * / address-family ipv6 flowspec
+     vrf * / address-family ipv6 multicast
+     vrf * / address-family ipv6 unicast / import from default-vrf
+     vrf * / address-family ipv6 unicast / export to
+    (IOSXR-361 / RT30338)
+
+Corrections:
+
+
+cisco-iosxr v6.2.9 [2017-10-20]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / arp purge-delay
+     interface * / local-proxy-arp
+    (IOSXR-360 / RT30384)
+
+  - Additions to the YANG model:
+     pce
+    (IOSXR-358 / RT30368)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / path-selection / hop-limit
+     mpls ldp / graceful-restart forwarding-state-holdtime
+     mpls ldp / graceful-restart reconnect-timeout
+     router ospf * / nsf lifetime
+     rsvp / signalling graceful-restart recovery-time
+     rsvp / signalling graceful-restart restart-time
+     snmp-server mibs eventmib packetloss *
+    (IOSXR-357 / RT30353)
+
+  - Additions to the YANG model:
+     router eigrp * / address-family * / interface * / neighbor *
+    (IOSXR-356 / RT30307)
+
+Corrections:
+
+
+cisco-iosxr v6.2.8 [2017-10-16]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     cdp log adjacency changes
+     ssh server netconf vrf *
+    (IOSXR-355 / RT30297)
+
+  - Strip whitespace(s) before sending description config in order to support
+     a XR twerk allowing for non-ascii characters.
+    (IOSXR-354 / RT30152)
+
+Corrections:
+
+  - Added presence true to:
+     mpls ldp
+    (IOSXR-350 / RT30223)
+
+
+cisco-iosxr v6.2.7 [2017-10-13]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     dynamic-template / type ppp * / ipv6 mtu
+     dynamic-template / type ppp * / ipv6 nd framed-prefix-pool
+     dynamic-template / type ppp * / ipv6 nd ra-unicast
+     dynamic-template / type ppp * / ipv6 verify unicast source reachable-via rx
+     dynamic-template / type ppp * / ppp ipcp dns
+     dynamic-template / type ppp * / ppp ipcp passive
+     dynamic-template / type ppp * / ppp ipv6cp passive
+     dynamic-template / type ppp * / ppp ipv6cp peer-interface-id
+     dynamic-template / type ppp * / ppp timeout
+     dynamic-template / type ppp * / service-policy *
+    (IOSXR-351 / RT30252)
+
+  - Optimized show live-status by caching device show commands in the NED for
+     huawei-vrp live-status time-to-live seconds. Fixed performance bugs.
+    (IOSXR-353)
+
+  - Added ms timestamps for performance profiling. Grep for DONE in trace.
+
+Corrections:
+
+  - Changed leaf to leaf-list on:
+     mpls traffic-eng / interface * / backup-path tunnel-te *
+      In order to support multiple entries.
+    (IOSXR-352 / RT30264)
+
+  - Added presence true to:
+     mpls traffic-eng
+    (IOSXR-350 / RT30223)
+
+
+cisco-iosxr v6.2.6 [2017-10-06]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / ignore home-address
+    (IOSXR-349 / RT30192)
+
+  - Additions to the YANG model:
+     interface * / lacp system priority
+     mpls ldp / nsr
+    (IOSXR-348 / RT30107)
+
+  - Additions to the YANG model:
+     router ospf * / vrf * / authentication
+     router ospf * / vrf * / message-digest-key
+    (IOSXR-347 / RT30086)
+
+  - Additions to the YANG model:
+     router pim / address-family ipv4 / old-register-checksum
+     router msdp / originator-id
+     router msdp / peer * / connect-source
+    (IOSXR-346 / RT30049)
+
+  - Fixed problem with live-status exec any admin install command,
+     by ignoring 'Warning .*:' lines
+    (IOSXR-344 / RT30112)
+
+  - Additions to the YANG model:
+     interface * / bundle minimum-active bandwidth
+    (IOSXR-343 / RT30069)
+
+  - Additions to the YANG model:
+     logging events display-location
+    (IOSXR-342 / RT30057)
+
+  - Additions to the YANG model:
+     interface Bundle-POS*
+
+Corrections:
+
+  - API CHANGE:
+     router hsrp / interface * / address-family ipv4 / hsrp / address * secondary
+      Support for multiple secondary addresses
+    (IOSXR-348 / RT30107)
+
+  - Fixed problem with mpls ldp / nsr and mpls ldp / log / nsr mixup.
+    (IOSXR-348 / RT30107)
+
+
+cisco-iosxr v6.2.5 [2017-09-22]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     radius-server throttle
+     radius-server vsa attribute ignore unknown
+     snmp-server mibs cbqosmib cache
+    (IOSXR-341 / RT30014)
+
+  - Additions to the YANG model:
+     router ospf * / timers lsa group-pacing
+     router ospf * / timers lsa refresh
+    (IOSXR-340 / RT29959)
+
+Corrections:
+
+
+cisco-iosxr v6.2.4 [2017-09-15]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router isis * / address-family * / fast-reroute per-prefix priority-limit
+    (IOSXR-339 / RT29922)
+
+  - Additions to the YANG model:
+     ipv6 mobile pmipv6-lma * domain * / bce
+     ipv6 mobile pmipv6-lma * domain * / dscp control-plane
+     ipv6 mobile pmipv6-lma * domain * / heartbeat
+     ipv6 mobile pmipv6-lma * domain * / redistribute home-address<
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / customer * vrf * / bandwidth aggregate
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / customer * vrf * / bce lifetime
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / customer * vrf * / mnp
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / customer * vrf * / mobile-route admin-distance
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / customer * vrf * / network authorized * / pool
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / mnp afi-all logical-mn
+     ipv6 mobile pmipv6-lma * domain * / pgw subscriber continuity
+    (IOSXR-337 / RT29876)
+
+  - Support for splitting up multiple random-detect discard-class entries in
+     policy-map * / class *
+    (IOSXR-337 / RT29876)
+
+  - Added live-status inventory to retrieve and cache non-config inventory data.
+    (IOSXR-336 / RT29868)
+
+  - Additions to the YANG model:
+     admin / hw-module location *
+     hw-module location * qos-mode lowburst-enabled
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp / control-word
+     l2vpn / logging / bridge-domain
+     l2vpn / logging / vfi
+     mpls ip-ttl-expiration-pop
+     mpls ldp / discovery / targeted-hello holdtime
+     mpls ldp / discovery / targeted-hello interval
+     mpls ldp / log / hello-adjacency
+    (IOSXR-334 / RT29844)
+
+  - Additions to the YANG model:
+     interface * / small-frame-padding
+    (IOSXR-333 / RT29840)
+
+  - Additions to the YANG model:
+     router hsrp / interface * / address-family ipv4 / hsrp / address * secondary
+    (IOSXR-332 / RT29815)
+
+  - Additions to the YANG model:
+     evpn / source interface Loopback
+     interface BVI* / host-routing
+     interface * / lacp system mac
+    (IOSXR-328 / RT29757)
+
+Corrections:
+
+  - API CHANGE:
+     Removed display-separated on:
+      router isis * / address-family * / fast-reroute per-prefix
+    (IOSXR-339 / RT29922)
+
+  - API CHANGE:
+     router hsrp / interface * / address-family ipv4 / hsrp / timers
+      Changed hello and hold timer YANG to limit bad configuring.
+    (IOSXR-335 / RT29851)
+
+  - Restored devices device platform data broken for some NSO versions
+     in cisco-iosxr v6.2.2
+
+
+cisco-iosxr v6.2.3 [2017-09-08]
+===============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added support for commit dry-run without connecting to device.
+    (IOSXR-329)
+
+Corrections:
+
+  - Lower live-status version ttl from 2147483647 to 1048575 to avoid
+     crashing some versions of NSO. NSO will be fixed as well.
+    Fixed problem listing interfaces with "-" in them.
+
+  - Corrected range in:
+     l2vpn / bridge group * / bridge-domain * / mac / aging
+      Max raised from 3000 to 30000.
+    (IOSXR-330 / RT29765)
+
+
+cisco-iosxr v6.2.2 [2017-09-01]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     devices device platform serial-number
+      Note: Only supported by newer NSO versions.
+    (IOSXR-327)
+
+  - Added string patterns to interface * / ipv4 address ip and mask leaves
+     to enforce correct syntax: 'ip' should only container the IP address
+     in A.B.C.D form and 'mask' either 'A.B.C.D' or '/prefix'. Please note
+     that the / is mandatory there, i.e. do not try to enter 'prefix' only.
+    (IOSXR-326 / RT29651)
+
+  - Added 'extended-parser turbo-xml-mode' to force XML-load if having trouble
+    with Maapi.setValues which is used in turbo-mode.
+
+Corrections:
+
+
+cisco-iosxr v6.2.1 [August 25, 2017]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Enhanced 'extended-parser turbo-mode' to use Maapi.setValues to speed up
+    data transfer (NOTE: Only works with NSO >= 4.4.2.2).
+
+  - Various yang-additions
+     (IOSXR-324 / RT29591)
+
+  - Added router isis * / address-family * / fast-reroute per-prefix tiebreaker
+     (IOSXR-325 / RT29592)
+
+YANG model changes since 6.2:
+
+  New leaves:
+  /controller/preconfigure/pse/tcam/location/compression/ipv6/anchor-prefix
+  /controller/pse/tcam/location/compression/ipv6/anchor-prefix
+  /hw-module/location/location-slice-breakout/breakout
+  /lpts/pifib/hardware/police/location/preconfigure
+  /router/bgp/bgp-no-instance/...
+  /router/bgp/bgp-instance/...
+      attribute-filter/group/attribute/explicit/discard
+      attribute-filter/group/attribute/explicit/treat-as-withdraw
+      attribute-filter/group/attribute/range/discard
+      attribute-filter/group/attribute/range/treat-as-withdraw
+      neighbor-group/update/in/filtering/message/buffers
+      neighbor/update/in/filtering/message/buffers
+      vrf/neighbor-group/update/in/filtering/message/buffers
+      vrf/neighbor/update/in/filtering/message/buffers
+  /router/isis/tag/address-family/ipv4/unicast/...
+  /router/isis/tag/address-family/ipv6/unicast/...
+  /router/isis/tag/interface/address-family/ipv4/unicast/...
+  /router/isis/tag/interface/address-family/ipv6/unicast/...
+      fast-reroute/per-prefix/tiebreaker/default/level
+      fast-reroute/per-prefix/tiebreaker/node-protecting-nolevel/node-protecting/index
+      fast-reroute/per-prefix/tiebreaker/node-protecting/index
+      fast-reroute/per-prefix/tiebreaker/node-protecting/level
+      fast-reroute/per-prefix/tiebreaker/srlg-disjoint-nolevel/srlg-disjoint/index
+      fast-reroute/per-prefix/tiebreaker/srlg-disjoint/index
+      fast-reroute/per-prefix/tiebreaker/srlg-disjoint/level
+  /router/ospf/mpls/ldp/sync-igp-shortcuts
+
+
+cisco-iosxr v6.2 [August 18, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Create 'get-device-config-settings file' directory if missing when login
+     Note: Parent directories can not get created.
+    Delete 'get-device-config-settings file' after having downloaded it.
+    (IOSXR-322)
+
+  - Added live-status interfaces-state for basic RFC7223 ietf-interfaces.yang
+     and RFC7277 ietf-ip.yang operational support.
+    See the YANG files for YANG model and IosxrNedCli.java nedLiveStatusRegister()
+     method for regular expressions scraping the info from show commands.
+    (IOSXR-319)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / path-selection / cost-limit
+    (IOSXR-318 / RT29514)
+
+Corrections:
+
+  - Trim comments "!<text>" shown in running-config to avoid creating NSO
+     annotations.
+    (IOSXR-321)
+
+  - Added missing compact-syntax and sequence-commands to:
+     interface tunnel-te* / auto-bw / adjustment-threshold
+    (IOSXR-320 / RT29566)
+
+
+cisco-iosxr v6.1.1 [August 11, 2017]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     clock summer-time * <end-offset>
+     control-plane / management-plane / out-of-band / vrf
+     logging source-interface ? vrf *
+     ntp / source vrf *
+    (IOSXR-317 / RT29468)
+
+  - Added ned-setting 'extended-parser robust-mode', useful to avoid having
+     unsupported sub-mode config search for the config in top-modes, and skip
+     out of sub-mode, breaking the parsing of the following config.
+    Enable extended-parser robust-mode on NETSIM by default on all NSO < 4.4.1.
+    (IOSXR-316)
+
+Corrections:
+
+  - Moved nedcom.jar from shared-jar to private-jar directory.
+
+
+cisco-iosxr v6.1 [August 04, 2017]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - API CHANGE:
+     mpls traffic-eng / attribute-set * affinity
+      Changed to same style as in 'interface tunnel-te* / affinity', which
+      expands the supported config options to include new options as well.
+    (IOSXR-315 / RT29364)
+
+  - Additions to the YANG model:
+     interface * / logging events lsp-status switchover
+     interface tunnel-te* / fast-reroute protect
+     interface tunnel-ip* / tunnel vrf
+     ipv4 virtual address a.b.c.d/x
+     ipv4 virtual address use-as-src-addr
+     router bgp * / address-family * / apply-group
+     router bgp * / address-family vpnv6 multicast
+     router bgp * / neighbor * / address-family ipv4 flowspec / validation
+     vrf * / address-family ipv4 multicast
+    (IOSXR-315 / RT29364)
+
+Corrections:
+
+  - Inject top-mode dummy config before vrf definition in order to avoid
+     being erronously parsed in previous sub-mode config.
+    Added additional explicit exit commands in YANG model.
+    (IOSXR-314 / RT29373)
+
+  - Do not cache worker in utility classes since worker may change.
+    (IOSXR-312)
+
+
+cisco-iosxr v6.0.6 [July 28, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Improved SSH/TELNET proxy connection to avoid blocking with timeout
+     if misconfigured.
+    (IOSXR-309)
+
+  - Additions to the YANG model:
+     l2vpn / xconnect group * / p2p * / neighbor routed *
+    (IOSXR-305 / RT29188)
+
+Corrections:
+
+
+cisco-iosxr v6.0.5 [July 14, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / bfd mode
+    (IOSXR-304 / RT29059)
+
+  - Additions to the YANG model:
+     spanning-tree pvrst *
+    (IOSXR-303 / RT29027)
+
+Corrections:
+
+
+cisco-iosxr v6.0.4 [July 06, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / ipv4 tcp-mss-adjust
+     router bgp * / address-family * / as-path-loopback
+    (IOSXR-301 / RT28992)
+
+Corrections:
+
+
+cisco-iosxr v6.0.3 [June 26, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     aaa accounting update
+     call-home / contact smart-licensing
+     interface * / ipv4 mask-reply
+    (IOSXR-297 / RT28850)
+
+  - Additions to the YANG model:
+     router hsrp / interface * / address-family ipv4 / hsrp / track object *
+    (IOSXR-296 / RT28809)
+
+Corrections:
+
+  - API CHANGE:
+    Restrict hsrp version 1 to 0-255 in:
+     router hsrp / interface * / address-family ipv4 / hsrp *
+    Made version leaf optional (used to be part of key) in:
+     router hsrp / interface * / address-family ipv4 / hsrp * version 2
+    (IOSXR-296 / RT28809)
+
+
+cisco-iosxr v6.0.2 [June 23, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router bgp * / address-family * / allow vpn default-originate
+     router ospf * / area * / external-out
+     router ospf * / area * / interface * / packet-size
+     router ospf * / area * / interface * / flood-reduction
+    (IOSXR-297 / RT28850)
+
+  - Additions to the YANG model:
+     mpls traffic-eng / gmpls optical-uni / controller * / announce srlgs
+     mpls traffic-eng / gmpls optical-uni / controller * / tunnel-properties / logging events lsp-status state
+     mpls traffic-eng / gmpls optical-uni / controller * / tunnel-properties / record srlg
+    (IOSXR-294 / RT28801)
+
+Corrections:
+
+  - Added presence true to :
+     l2vpn / pw-class * / encapsulation l2tpv3
+     l2vpn / pw-class * / encapsulation mpls
+    (IOSXR-298 / RT28876)
+
+
+cisco-iosxr v6.0.1 [June 16, 2017]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     aaa group server tacacs+ * / server-list * / key|timeout
+    (IOSXR-293 / RT28760)
+
+  - Added support for confirmed-in-commit method with the
+     cisco-iosxr-commit-method ned-setting. See README for details.
+    (IOSXR-291 / RT28685)
+
+  - Do not allow route-policy leaf 'value' to be set to 'end-policy'.
+
+Corrections:
+
+
+cisco-iosxr v6.0 [June 02, 2017]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added new feature for optimizing sync-from (and compare-config).
+    Enable with ned-setting 'cisco-iosxr extended-parser turbo-mode'.
+    (IOSXR-286)
+
+  - Implemented SFTP support for transfering configuration before commit.
+    May be preferred for large configuration diffsets.
+    Configure minimum config line(s) threshold to enable. For example, enable SFTP
+    apply for all config diffsets longer than 100 lines:
+     devices device <devname> ned-settings cisco-iosxr apply-device-config-settings
+       sftp-threshold 100
+     devices device <devname> ned-settings cisco-iosxr apply-device-config-settings
+       file "disk0a:/usr/commit-config.tmp"
+    (IOSXR-282)
+
+  - Support for the new NSO API call showPartial. The NSO will call this function
+    when a configuration change has been committed with the 'no-overwrite' flag.
+    This means that NSO will only verify that the config involved in the commit
+    has not been changed out of band.
+    The NED will in the showPartial function try to only dump the parts of the
+    device config that is relevant for the commit (in a best effort approach).
+    Currently only NSO 4.4 supports the showPartial API.
+    (IOSXR-277)
+
+  - SFTP support for fetching the device configuration.
+    May be preferred for systems with a large running-config.
+    Configure ned-settings to enable, for example:
+     devices device <devname> ned-settings cisco-iosxr get-device-config-settings
+       method sftp-transfer
+     devices device <devname> ned-settings cisco-iosxr get-device-config-settings
+       file "disk0a:/usr/running-config.tmp"
+    (IOSXR-276)
+
+  - Additions to the YANG model:
+     router bgp * / neighbor * / graceful-maintenance
+    (IOSXR-283 / RT28500)
+
+  - Additions to the YANG model:
+     router isis * / max-link-metric
+    (IOSXR-281 / RT28476)
+
+  - Additions to the YANG model:
+     router msdp / vrf * / description
+     router msdp / vrf * / mesh-group
+     router msdp / vrf * / sa-filter * in|out
+    (IOSXR-279 / RT28458)
+
+  - Moved caching of encrypted secrets from applyConfig/commit to persist,
+     thereby enabling support for device encrypted cipher in:
+     admin / username * / secret
+     admin / username * / password
+
+  - Optimized sync-from configuration transformation code.
+
+Corrections:
+
+  - Read device-profile from devices device <devname> device-profile.
+    Default to cisco-iosxr.
+    (IOSXR-278)
+
+  - API CHANGE:
+    Removed read-only leaf 'version' from config.
+
+  - Replaced ! with exit to solve a XR mode bug in:
+     lmp / gmpls optical-uni / controller *
+
+
+cisco-iosxr v5.3.1 [May 12, 2017]
+=================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added cli-allow-abbrev-keys NedCapability for newer NSO where key
+     abbreviations are default off.
+    (IOSXR-273)
+
+  - Expanded the YANG model in:
+     multicast-routing [/ vrf *] / address-family ipv6
+    (IOSXR-271 / RT28189)
+
+Corrections:
+
+
+cisco-iosxr v5.3 [May 5, 2017]
+==============================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Support for config mode exec commands under "exec", e.g.:
+     admin@ncs(config-config)# exec "default interface Loopback1"
+     result
+     > default interface Loopback1
+     RP/0/RSP0/CPU0:259-ip-vrf-5(config)#
+    (IOSXR-268)
+
+  - Support for running multiple commands in 'live-status exec any' and config
+     mode 'exec' commands. Use the delimiter " ; " (note: must be white spaces)
+     to separate each command. If need to answer prompts, supply them separatedly
+     for each command, e.g.:
+       exec "command 1 | prompts Y ; command 2 | prompts N"
+     Warning: No error checking is done on command output, i.e. this command
+              is 100% raw, you must check the errors yourself. Only exception
+              (of course) is that config command may not leave config mode.
+    (IOSXR-268)
+
+  - Additions to the YANG model:
+     router pim / address-family ipv6 / rpf topology route-policy *
+     router pim / address-family ipv6 / hello-interval
+     router pim / address-family ipv6 / mdt
+     router pim / address-family ipv6 / rp-address *
+     router pim / address-family ipv6 / accept-register
+     router pim / address-family ipv6 / spt-threshold
+     router pim / address-family ipv6 / maximu
+     router pim / address-family ipv6 / log neighbor changes
+    (IOSXR-267 / RT28121)
+
+  - Additions to the YANG model:
+     segment-routing / traffic-eng / explicit-path * / index *
+     segment-routing / traffic-eng / explicit-path * / policy *
+    (IOSXR-264 / RT28064)
+
+  - Added <region> leaf to clock timezone for XR NCS API support.
+    (IOSXR-262 / RT28060)
+
+Corrections:
+
+  - API CHANGE:
+     router pim / address-family ipv6 / neighbor-check-on-recv
+     router pim / address-family ipv6 / neighbor-check-on-send
+    (IOSXR-267 / RT28121)
+
+  - API CHANGE:
+     router isis * / set-overload-bit
+      Changed YANG to support both level and non-level config modifications.
+      HINT: Set config on device, sync-from and show in XML to see new design.
+    (IOSXR-265 / RT28096)
+
+  - API CHANGE:
+     exception choice
+      Changed from container to list. Repaired broken options.
+    (IOSXR-262 / RT28060)
+
+
+cisco-iosxr v5.2.3 [April 28, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Support for restoring "ipv6 enable" on interface upon vrf change.
+    (IOSXR-259 / RT27980)
+
+Corrections:
+
+  - Added policy-map * / class * / police rate fix from 5.2.2 to NETSIM.
+    (IOSXR-260 / RT27989)
+
+  - Removed unused no-case in ipv4 address, XR does not show "no ipv4 address"
+     on an interface like IOS Classic.
+
+
+cisco-iosxr v5.2.2 [April 21, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface tunnel-te* / binding-sid mpls
+     interface tunnel-te* / binding-sid mpls label
+    (IOSXR-257 / RT27927)
+
+  - Additions to the YANG model:
+     snmp-server trap-source IPv4|IPv6
+    (IOSXR-256 / RT27926)
+
+  - Additions to the YANG model:
+     l2vpn / xconnect group * / p2p * / neighbor evpn evi * target * source *
+    (IOSXR-255 / RT27897)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / forwarding-adjacency
+     interface * / logging events all
+    (IOSXR-253 / RT27899)
+
+  - Additions to the YANG model:
+     telemetry model-driven / destination-group * / address family ipv4 * / encoding
+     telemetry model-driven / destination-group * / address family ipv6 *
+     telemetry model-driven / sensor-group * / sensor-path * [API CHANGE]
+     telemetry model-driven / subscription * / sensor-group-id *
+     telemetry model-driven / subscription * / destination-id *
+    (IOSXR-251 / RT27787)
+
+  - Added work around for NSO bug when deleting:
+     policy-map * / class * / police rate
+    Replace erronous "police rate" with "no police".
+    (IOSXR-245 / RT27720)
+
+Corrections:
+
+  - Improved banner code, enabling support for ! and " as marker character.
+    (IOSXR-254)
+
+
+cisco-iosxr v5.2.1 [April 14, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router hsrp / interface * / address-family * / hsrp * slave
+    (IOSXR-250 / RT27770)
+
+  - Additions to the YANG model:
+     call-home [basic config]
+     dhcp ipv4 / profile * / allow-move
+     dhcp ipv4 / profile * / lease proxy client-lease-time
+     dhcp ipv4 / profile * / lease
+     dhcp ipv6 / profile * / address-pool
+     diameter [basic config]
+     dynamic-template / type ipsubscriber * / ipv4 verify unicast source reachable-via rx
+     dynamic-template / type ipsubscriber * / ipv4 unreachables disable
+     dynamic-template / type ipsubscriber * /  multicast ipv4 qos-correlation
+     dynamic-template / type ipsubscriber * / service-policy
+     dynamic-template / type ppp * / dhcpv6
+     dynamic-template / type ppp * / ipv4 unnumbered
+     dynamic-template / type ppp * / ipv6 enable
+     dynamic-template / type ppp * / multicast ipv4
+     dynamic-template / type ppp * / ppp ipcp peer-address pool
+     dynamic-template / type service * / accounting aaa list *
+     lacp system priority
+     pool vrf * ipv4 * / address-range * block
+     pool vrf * ipv6 * / address-range *
+     pool vrf * ipv4 * / exclude *
+     pool vrf * ipv6 * / prefix-range *
+     process mandatory location *
+     snmp-server ifmib ipsubscriber
+    (IOSXR-249)
+
+Corrections:
+
+  - API CHANGE:
+     Fixed key chain * / key * / accept-lifetime|send-lifetime
+    Corrected stop-month type.
+    (IOSXR-252 / RT27793)
+
+
+cisco-iosxr v5.2 [April 7, 2017]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Removed tailf:cli-no-keyword annotation on sub leaves
+     in policy-map * / class * / due to problem deleting.
+    (IOSXR-245 / RT27720)
+
+  - Additions to the YANG model:
+     router bgp * / session-group * / shutdown
+    (IOSXR-244 / RT27716)
+
+  - Support for device encrypted cipher in:
+     router bgp * / vrf * / neighbor * / password
+    (IOSXR-243 / RT27679)
+
+  - API CHANGE:
+    Support for device encrypted cipher in:
+     ftp client password
+     ntp / authentication-key * md5
+     router bgp * / session-group * / password
+     router ospf * / message-digest-key
+     router ospf * / area * / message-digest-key
+    Due to this added support, the YANG in above config has changed and
+     XML templates must be updated to match the new YANG.
+
+  - Added an internal live-status command to force a resync of all cached
+     encrypted values used by NedSecrets. Useful to solve an issue where the
+     device rehashes type 7 secrets with a different seed, causing the values
+     to diff from the old ones, even using the same cleartext password.
+     Issue like this:
+      admin@ncs# devices device <devname> live-status exec any "secrets resync"
+     Note: the command will do a "show running-config" from the device, hence
+           may be quote slow for large configs.
+
+  - Added an internal live-status command to delete all cached encrypted values
+     in NedSecrets.
+
+Corrections:
+
+  - API CHANGE
+     router ospf * / max-metric router-lsa
+    Complete redesign due to bad modeling. Now also supports no arguments.
+    (IOSXR-248 / RT27736)
+
+  - API CHANGE:
+     aaa authentication login *
+     aaa authentication subscriber *
+     aaa authorization commands *
+     aaa authorization exec *
+     aaa authorization eventmanager *
+     aaa authorization subscriber *
+    Due to lack of support for user sorted method list.
+    Removed 'ordered-by user' from aaa authentication login *
+    (IOSXR-241 / RT27595)
+
+  - Strip meta-data prefix in NedSecrets if shown, to avoid bad regexp.
+
+
+cisco-iosxr v5.1.0 [March 31, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added cisco-iosxr-inject-command ned-setting list in order to be able to
+     inject commands when writing to the device. See README for info.
+    (IOSXR-242 / RT27625)
+
+Corrections:
+
+  - Added 'ordered-by user' to aaa authentication login *
+    (IOSXR-241 / RT27595)
+
+  - API CHANGE:
+     snmp-server host *
+    Complete redesign of list due to support for only one entry per address.
+    New list also has traps|inform and community-string as keys.
+    (IOSXR-240 / RT27590)
+
+  - API CHANGE:
+     logging buffered
+    Not a union. Split leaf 'type' in separate 'type' and 'size' leaves.
+    (IOSXR-239 / RT27589)
+
+
+cisco-iosxr v5.0.11 [March 27, 2017]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added "| noprompts" option to live-status exec commands in order to be able
+     to ignore (erronously) triggered question prompts. Also added 'IGNORE' as
+     an option to '| prompts' in order to specify what prompts to ignore.
+    (IOSXR-235)
+
+Corrections:
+
+  - Fixed problem with NETSIM and NedSecrets by making sure show running is
+     called with initial 'do ' if in config mode.
+    (IOSXR-237 / RT27547)
+
+  - Throw NedException "Authentication failed" if bad telnet password results
+     in Username prompt repeated by device.
+    (IOSXR-236 / RT27532)
+
+
+cisco-iosxr v5.0.10 [March 23, 2017]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added section in README on how to configure route-policy contents,
+     a common (unnecessary) support topic.
+    (IOSXR-234)
+
+  - Support for device encrypted cipher in:
+     router bgp * / neighbor-group * / password
+     router bgp * / neighbor * / password
+    (IOSXR-232 / RT27414)
+
+Corrections:
+
+  - Do not (re-)quote '# description entries' in route-policy on NETSIM.
+    (IOSXR-233 / RT27265)
+
+  - Removed bad config: evpn / evi * / interface *
+     Note: interface list is located under evpn only.
+    (IOSXR-231)
+
+  - Fixed deadlock when performing sync-from a device with no admin config.
+    (IOSXR-230 / RT27479)
+
+
+cisco-iosxr v5.0.9 [March 17, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     telemetry policy-driven
+    (IOSXR-226 / RT27372)
+
+  - Additions to the YANG model:
+     track * / delay
+    (IOSXR-225 / RT27314)
+
+  - Additions to the YANG model:
+     aaa group server radius * / vrf
+     dhcp ipv6 / interface subscriber-pppoe profile
+     dhcp ipv6 / profile * / relay option
+     dynamic-template / type ipsubscriber *
+     router bgp * / address-family * / redistribute subscriber
+    (IOSXR-215 / RT27180)
+
+Corrections:
+
+  - Fixed problem with live-status exec any admin install add source command.
+    (IOSXR-228 / RT27430)
+
+  - Check cisco-iosxr-config-warning list when commiting config as well.
+    (IOSXR-175 / RT26111)
+
+
+cisco-iosxr v5.0.8 [March 08, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     l2vpn / pbb / backbone-source-mac
+    (IOSXR-224 / RT27267)
+
+  - Additions to the YANG model:
+     telemetry model-driven
+     telemetry model-driven / destination-group * / address family ipv4 * / protocol
+     telemetry model-driven / sensor-group * / sensor-path
+     telemetry model-driven / subscription *
+    (IOSXR-223 / RT27209)
+
+  - Additions to the YANG model:
+     tcp synwait-time
+    (IOSXR-220 / RT27239)
+
+  - Additions to the YANG model:
+     ssh client vrf
+    (IOSXR-217 / RT27214)
+
+  - Additions to the YANG model:
+     aaa accounting subscriber *
+     aaa authentication subscriber *
+     aaa authorization subscriber *
+     aaa group server radius * / deadtime
+     aaa group server radius * / source-interface
+     aaa server radius dynamic-author / port
+     aaa intercept
+     aaa server radius dynamic-author / client * vrf *
+     class-map type control subscriber *
+     dhcp ipv6 / profile * / lease
+     dhcp ipv6 / profile * / prefix-pool
+     dhcp ipv6 / profile * / rapid-commit
+     dynamic-template / type ppp *
+     dynamic-template / type session *
+     lpts punt police location * / protocol arp rate
+     policy-map * / class * / http-redirect
+     policy-map * / class * / transmit
+     pool vrf * ipv6 *
+     pppoe bba-group / ac name
+     pppoe bba-group / service selection disable
+     pppoe bba-group / sessions mac throttle
+     pppoe in-flight-window
+     radius-server ipv4 dscp
+     radius-server deadtime
+     radius-server disallow null-username
+     radius-server source-port extended
+     radius-server dead-criteria
+    (IOSXR-215 / RT27180)
+
+Corrections:
+
+  - Added string pattern to enforce H.H.H format for:
+     evpn / virtual neighbor * pw-id * / ethernet-segment / bgp route-target
+    Updated info strings on EVPN peering and recovery timers.
+    (IOSXR-218 / RT27222)
+
+
+cisco-iosxr v5.0.7 [March 03, 2017]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router bgp * / address-family * / redistribute eigrp *
+    (IOSXR-213 / RT27140)
+
+  - Additions to the YANG model:
+     router isis * / address-family * / segment-routing mpls sr-prefer
+     mpls label range table
+    (IOSXR-211 / RT27133)
+
+Corrections:
+
+  - Fixed problem with cisco-iosxr-commit-method = direct and commit failure
+     resulting in compare-config diff due to rollbacked previous config.
+    (IOSXR-214 / RT27174)
+
+  - Added presence statement to mpls oam container.
+    Increased ranges in mpls label range config
+    (IOSXR-211 / RT27133)
+
+  - API CHANGE:
+     Added missing presence statement on:
+      l2vpn / bridge group * / bridge-domain * / mac / secure
+      causing the delete to leave secure on device.
+    (IOSXR-210 / RT27107)
+
+
+cisco-iosxr v5.0.6 [February 24, 2017]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - API CHANGE:
+    Changed from leaf to leaf-list to support multiple groups in:
+     apply-group
+     interface * / apply-group.
+    Note: no need for apply-group-append/remove macros. Just add/remove
+          groups to the apply-group leaf-list.
+    (ISOXR-208 / RT26951)
+
+  - Additions to the YANG model:
+     evpn / timers
+     evpn / virtual * / timers
+    (IOSXR-205 / RT26984)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / pbb core / evi
+    (IOSXR-186)
+
+Corrections:
+
+  - Added pattern on esi-value in ethernet-segment / identifier under:
+     evpn / virtual neighbor * pw-id *
+     evpn / virtual vfi *
+    (IOSXR-207 / RT26986)
+
+  - API CHANGE:
+     l2vpn / bridge group * / bridge-domain * / neighbor *
+     evpn / virtual neighbor * pw-id *
+    Changed from type string to type inet:ipv4-address and added range.
+    (IOSXR-206 / RT26985)
+
+  - Removed cli-multi-word-key to route-policy name since breaks Juniper CLI.
+    Insert and strip quotes in route-policy names when writing/reading.
+    (IODXR-204 / RT26954)
+
+
+cisco-iosxr v5.0.5 [February 10, 2017]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface nve* / member vni * / load-balance per-evi
+     interface nve* / member vni * / suppress-unknown-unicast-flooding
+    (IOSXR-203 / RT26836)
+
+  - Added basic 'router eigrp' configuration support to the YANG model.
+    (IOSXR-202 / RT26834)
+
+  - Additions to the YANG model:
+     router bgp * / neighbor * / address-family link-state link-state
+    (IOSXR-201 / RT26816)
+
+  - Additions to the YANG model:
+     interface * / apply-group
+    (IOSXR-199 / RT26812)
+
+Corrections:
+
+  - API CHANGE:
+     group *
+      Group contents changed to a single quoted string in order to support
+      any contents. To see NSO syntax, configure group on device, then sync
+      from to NSO and study the config using show.
+    (IOSXR-199 / RT26812, IOSXR-200 / RT26815)
+
+
+cisco-iosxr v5.0.4 [February 03, 2017]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     pppoe bba-group / pado delay
+    (IOSXR-198 / RT26745)
+
+  - Support for NedSecrets on non-transaction id setups.
+    (IOSXR-196)
+
+  - Additions to the YANG model:
+     controller dwdm * / g709 otu threshold prefec-sd-ber
+     controller dwdm * / g709 otu threshold prefec-sf-ber
+     controller dwdm * / g709 otu threshold sd-ber
+     controller dwdm * / wavelength 100MHz-Grid
+     controller dwdm * / wavelength 50GHz-Grid
+    (IOSXR-195 / RT26666)
+
+  - Changed ned-setting log format.
+
+Corrections:
+
+  - API CHANGE:
+     Removed ios-regex leaf from as-path-set list. Set ios-regex entries
+     in set list under as-path-set, e.g. like in the other sets.
+    (IOSXR-197 / RT26739)
+
+  - Widened string patterns on:
+     controller dwdm *
+     nv controller HundredGigE *
+    (IOSXR-195 / RT26666)
+
+
+cisco-iosxr v5.0.3 [January 27, 2017]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller Optics *
+     hw-module location * slice *
+    (IOSXR-188 / RT26446)
+
+Corrections:
+
+  - Discontinued support for NSO-4.3 due to NSO bug. Use NSO-4.3.1.
+
+
+cisco-iosxr v5.0.2 [January 20, 2017]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+    WARNING:
+    Using NSO-4.3 branch you must upgrade to minimum NSO-4.3.0.2 in order for
+    NedSecrets to work. If you are not, you will get a compare-config diff
+    when setting cleartext passwords which the device encrypts.
+    The problem can also be seen in the logs as an exception:
+      "... com.tailf.cdb.CdbException: Not a cdb operational data path"
+
+Enhancements:
+
+  - Additions to the YANG model:
+     ipsla / responder / type udp ipv4 address * port *
+    (IOSXR-193 / RT26574)
+
+  - Additions to the YANG model:
+     router bgp / bgp confederation identifier
+    (IOSXR-192 / RT26572)
+
+  - Additions to the YANG model:
+     controller SONET * / path / delay trigger
+    (IOSXR-191 / RT26557)
+
+  - Additions to the YANG model:
+     track * / type route reachability / route ipv4
+    (IOSXR-190 / RT26497)
+
+  - Additions to the YANG model:
+     evpn / evi * / advertise-mac
+     evpn / virtual neighbor * pw-id *
+     evpn / virtual vfi *
+     l2vpn / bridge group * / bridge-domain * / access-vfi *
+    (IOSXR-189 / RT26464)
+
+  - Additions to the YANG model:
+     dhcp ipv4 / duplicate-mac-allowed
+     dhcp ipv4 / profile * / helper-address vrf * * giaddr
+     dhcp ipv6 / profile * / interface *
+     dhcp ipv6 / profile * / link-address
+     dhcp ipv6 / profile * / source-interface
+     evpn / evi * / advertise-mac
+     interface * / ipsubscriber ipv4 l2-connected / initiator dhcp
+     interface * / ipsubscriber ipv6 l2-connected / initiator dhcp
+     subscriber / arp scale-mode-enable
+     subscriber / redundancy / source-interface
+     subscriber / redundancy / group *
+    (IOSXR-185 / RT26440)
+
+  - Additions to the YANG model:
+     aps rprplus
+     mpls ldp / router-id <interface name>
+     hw-module linecard throughput *
+    (IOSXR-184 / RT26429)
+
+  - Additions to the YANG model:
+     interface * / arp learning
+     interface * / arp timeout
+     router isis / interface * / retransmit-throttle-interval
+    (IOSXR-183)
+
+  - Additions to the YANG model:
+     router rip / auto-summary
+     router rip / maximum-paths
+     router rip / [interface * / ] route-policy
+    (IOSXR-182 / RT26423)
+
+Corrections:
+
+  - Moved config of
+     l2vpn / bridge group * / bridge-domain * / evi *
+    til after
+     l2vpn / bridge group * / bridge-domain * / pbb
+    (IOSXR-186)
+
+  - API CHANGE:
+     dhcp ipv6 / interface *
+      Suppress mode
+    (IOSXR-185 / RT26440)
+
+  - API CHANGE:
+     interface * / ipv6 nd ra-interval
+     Changed from leaf to container with 2 leaves in order to support minimum
+     interval as well.
+    (IOSXR-185 / RT26440)
+
+  - API CHANGE:
+     snmp-server contact|location
+      Removed tailf:cli-multi-value in order to not insert ""
+    (IOSXR-184 / RT26429)
+
+
+cisco-iosxr v5.0.1 [January 05, 2017]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+    WARNING:
+    NedSecrets does not work with NSO-4.3 or NSO-4.3.0.1 due to a problem
+    with Navu and CDB. The problem will manifest as a config diff when device
+    encrypts cleartext secrets. To fix this, you must upgrade your NSO-4.3.x
+    to a newer version which includes the fix #15413. Presently none available.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     rp mgmtethernet forwarding
+    (IOSXR-179 / RT26335)
+
+  - Additions to the YANG model:
+     router bgp * / neighbor * / address-family * / Signalling
+    (IOSXR-178 / RT26333)
+
+  - Additions to the YANG model:
+     mpls traffic-eng / attribute-set * pce / disjoint-path
+    (IOSXR-176 / RT26283)
+
+Corrections:
+
+
+cisco-iosxr v5.0 [December 22, 2016]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+    WARNING:
+    NedSecrets does not work with NSO-4.3 or NSO-4.3.0.1 due to a problem
+    with Navu and CDB. The problem will manifest as a config diff when device
+    encrypts cleartext secrets. To fix this, you must upgrade your NSO-4.3.x
+    to a newer version which includes the fix #15413. Presently none available.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / logging events pcalc-failure
+     interface * / logging events sub-lsp-status state
+     interface tunnel-mte* / signalled-name|signalled-bandwidth|priority
+     interface tunnel-mte* / fast-reroute|record-route|affinity
+     router pim / address-family ipv4 / mdt c-multicast-routing * / announce-pim-join-tlv
+    (IOSXR-174 / RT26254)
+
+  - Additions to the YANG model:
+     l2vpn / pw-class * / encapsulation mpls / load-balancing / flow-label both
+    (IOSXR-172 / RT26235)
+
+  - Rewrote the implementation for supporting device encrypted data in order
+     to support commit queues.
+    (IOSXR-171)
+
+  - Additions to the YANG model:
+      router bgp * / address-family ipv6 * / aggregate-address *
+    (IOSXR-169 / RT25397)
+
+Corrections:
+
+  - Properly clean up resources when closing NED.
+    (IOSXR-173)
+
+  - Replace whitespaces " " in cached-show version model with "-".
+
+
+cisco-iosxr v4.6.2 [December 16, 2016]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller SONET * / threshold b1-tca
+     controller SONET * / threshold b2-tca
+     interface * / capture software packets
+     interface SRP*
+     interface tunnel-ip* / keepalive
+     hw-module port * srp location *
+     policy-map * / class * / set srp-priority
+     radius-server key
+     radius-server timeout
+     radius-server retransmit
+     router igmp / interface * / static-group *
+     router isis * / address-family * / redistribute isis *
+     router isis / interface * / priority
+     xml agent ssl
+    (IOSXR-164 / RT26123)
+
+Corrections:
+
+  - API CHANGE:
+     Rewrote the bad "aaa authorization commands" API change from IOSXR-59
+     due to lacking support for none option (ended up inside a group).
+    (IOSXR-167 / RT26147)
+
+  - API CHANGE:
+     radius-server host * / key
+      due to support for device encrypted passwords.
+    (IOSXR-164 / RT26123)
+
+  - Lowered range from 5-512000 to 1-512000 on:
+     l2vpn / bridge group * / bridge-domain * / mac / limit maximum
+    (IOSXR-166 / RT26150)
+
+  - Strip "" around ios-regex entries in sets, e.g. community-set values.
+    (IOSXR-165 / RT26110)
+
+  - Remove interface * / ethernet-services access-group before modifying it.
+    (IOSXR-158 / RT26008)
+
+
+cisco-iosxr v4.6.1 [December 09, 2016]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / aaa radius attribute
+     interface * / ipv6 unreachables disable
+     interface * / pppoe enable
+     interface * / service-policy control subscriber
+    (IOSXR-150 / RT25909)
+
+Corrections:
+
+  - Improved prompt pattern to require a numeric or alphabet character first
+     to avoid matching banner starting with "-" and ending with "#".
+    (IOSXR-156 / RT25902)
+
+  - Improved CSCtk60033 work around patch by extracing all policy-map class
+     deletes and commiting them first, thereby avoiding loosing commit error
+     information on the real transaction.
+    Also made the patch configurable by use of cisco-iosxr-auto CSCtk60033-patch
+     ned-setting. Default true.
+    (IOSXR-156 / RT25971)
+
+  - Changed cisco-iosxr-auto / vrf-forwarding-restore ned-setting to default true.
+    (IOSXR-156 / RT25971)
+
+  - API CHANGE:
+    Added support for mpls ldp / neighbor cleartext passwords, both
+    the general password and address specific ones.
+    Due to this, the YANG for the following path had to change:
+     mpls ldp / neighbor / password
+    Service templates using this config must modify their templates.
+    (IOSXR-126)
+
+  - Changed exec command timeout time from connectTimeout to readTimeout.
+
+
+cisco-iosxr v4.6.0 [December 02, 2016]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller SONET * / line / delay clear
+     controller SONET * / s1byte ignore
+    (IOSXR-151 / RT25951)
+
+  - Additions to the YANG model:
+     interface * / bundle load-balancing
+    (IOSXR-155 / RT25954)
+
+  - API CHANGE:
+    Implemented support for replacing encrypted device secrets with the
+     cleartext cdb value in order to avoid compare-config diff and out of
+     sync with service. The following config is supported so far:
+     key chain * / key * / key-string
+    (IOSXR-154 / RT25953)
+
+  - Additions to the YANG model:
+     router bgp / bgp bestpath med confed
+    (IOSXR-153 / RT25967)
+
+   - Added connection specific parameters to the ned-settings:
+      cisco-iosxr-connection-settings/number-of-retries [default 0]
+      cisco-iosxr-connection-settings/time-between-retry [default 1 sec]
+     The settings can be used to trim the number of connection retries and
+     the time in seconds between each retry.
+     (IOSXR-152)
+
+  - Additions to the YANG model:
+     vrf * / address-family ipv4 unicast / import from
+     vrf * / address-family ipv4 unicast / export to
+     router bgp * / address-family * / advertise * imported-from-default-vrf
+     router bgp * / address-family * / advertise * imported-from-vrf
+    (IOSXR-149 / RT25901)
+
+  - Adding info strings on some drop-node-name leaves for a GUI.
+    (IOSXR-132 / RT25558)
+
+  - Performance optimization: removed all except one cli-diff-dependency.
+    (IOSXR-101)
+
+
+Corrections:
+
+
+cisco-iosxr v4.5.2 [November 18, 2016]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Support for basic admin config. Configure under admin top container.
+    NED will automatically enter admin mode etc. Supported admin config:
+     admin /
+      clock
+      diagnostic
+      exception
+      fpd
+      hw-module bfd-hw-offload enable location
+      hw-module scale
+      username
+    (IOSXR-136 / RT25589)
+
+  - Additions to the YANG model:
+     ipsla / operation * / type mpls lsp *
+     ipsla / operation * / type * / target
+    (IOSXR-146 / RT25757)
+
+Corrections:
+
+
+cisco-iosxr v4.5.1 [November 11, 2016]
+======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router hsrp / interface * / address-family ipv4 / hsrp / authentication
+     router hsrp / interface * / address-family ipv4 / hsrp / mac-address
+     router hsrp / interface * / address-family ipv4 / hsrp / name
+    (IOSXR-143 / RT25689)
+
+  - Additions to the YANG model:
+     ipv4 assembler
+     ipv4 source-route
+    (IOSXR-141 / RT25664)
+
+  - Additions to the YANG model:
+     multicast-routing / address-family ipv4 / multipath hash
+    (IOSXR-139 / RT25643)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp / route-target import *
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp / route-target export *
+    (IOSXR-139 / RT25615)
+
+Corrections:
+
+  - Fixed class-map * / match vlan * from, convert commas in both directions.
+    That is, use commas in NSO, it is translated to device.
+    (IOSXR-142 / RT25688)
+
+  - API CHANGE:
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp / route-target *
+      due to the old model not supporting multiple import and export entries.
+   (IOSXR-139 / RT25615)
+
+
+cisco-iosxr v4.5 [November 8, 2016]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Replaced Navu code to restore sets and ip addresses on interfaces
+     with calls to the device, making it possible to run the NED with
+     commit queues again.
+    (IOSXR-138)
+
+  - Additions to the YANG model:
+     router static / address-family ipv4 unicast / * metric
+     interface * / lacp period short receive
+     interface * / lacp period short transmit
+     router ospf * / area * / mpls ldp auto-config
+     router ospf * / area * / mpls ldp sync-igp-shortcuts
+    (IOSXR-127 / RT25466)
+
+  - Additions to the YANG model:
+     apply-group
+     ethernet oam profile *
+     logging suppress apply rule * / source location
+     mpls ldp / signalling dscp
+     router isis * / interface * / lsp-interval
+     router pim / address-family ipv4 / accept-register
+     snmp-server timeouts subagent
+     snmp-server trap-source port
+    (IOSXR-135)
+
+Corrections:
+
+  - Fixed problem sending banners to device, causing transaction to block.
+    (IOSXR-137 / RT25569)
+
+  - API CHANGE:
+     snmp-server user * priv [moved out of auth container due to model error]
+    (IOSXR-135)
+
+  - Modified range (and sometimes type) in the following areas:
+     router static / address-family * / * minimum-interval
+     router static / address-family ipv4 unicast / * metric
+    (IOSXR-127 / RT25466)
+
+  - API CHANGE:
+     router static / address-family ipv4 unicast / * description
+      Removed multi-value from string and reordered leaves.
+    (IOSXR-127 / RT25466)
+
+
+cisco-iosxr v4.4.6 [October 28, 2016]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Optimized sync-from device by optimizing config transformation after
+     retrieving config from device.
+    (IOSXR-128 / RT25481)
+
+  - Added timing info log(s) in ncs-java-vm.log.
+    Note: more detailed with cisco-iosxr-log-verbose ned-setting.
+    (IOSXR-128 / RT25481)
+
+  - Additions to the YANG model:
+     group * / interface * / mtu
+
+  - Additions to the YANG model:
+     router ospf * / area * / mpls traffic-eng multicast-intact
+     rsvp / interface * / bandwidth percentage
+    (IOSXR-126)
+
+Corrections:
+
+  - Fixed problem with modifying interface * / ipv4 access-group
+    (IOSXR-130 / RT25490)
+
+  - Do not use show configuration commit list for transaction id with NETSIM.
+
+
+cisco-iosxr v4.4.5 [October 21, 2016]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface tunnel-te* / autoroute announce / metric
+    (IOSXR-122 / RT25390)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / bfd / dampening
+     interface tunnel-te* / bfd / bringup-timeout
+     interface tunnel-te* / bfd / lsp-ping
+    (IOSXR-123 / RT225387)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / pce / delegation
+    (IOSXR-121 / RT25389)
+
+  - Added support for clearing and restoring interface ipv6 addresses as well
+     when vrf is changed and ned-settings cisco-iosxr-auto vrf-forwarding-restore
+     is set to true.
+    (IOSXR-120 / RT25354)
+
+  - Additions to the YANG model:
+     controller dwdm * / admin-state in-service-config-allowed
+    (IOSXR-118 / RT25297)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / bfd / fast-detect sbfd
+     sbfd
+    (IOSXR-119)
+
+Corrections:
+
+  - interface tunnel-te* / bfd / minimum-interval range changed to 3-30000.
+    (IOSXR-119)
+
+  - Fixed l2vpn / xconnect * / p2p * / description, not multi-value string.
+    (IOSXR-109/ RT25249)
+
+
+cisco-iosxr v4.4.4 [October 14, 2016]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router ospfv3 * / domain-id
+    (IOSXR-113 / RT25256)
+
+  - Additions to the YANG model:
+     l2vpn / ignore-mtu-mismatch
+    (IOSXR-112 / RT25254)
+
+  - Additions to the YANG model:
+     router bgp / bgp fast-external-fallover disable
+    (IOSXR-111 / RT25253)
+
+Corrections:
+
+  - API CHANGE:
+     l2vpn / xconnect group * / p2p * / description
+    Removed cli-multi-value from string. Use "" like device.
+    (IOSXR-109 / RT25249)
+
+  - API CHANGE:
+     router ospf * / domain-id type
+    (IOSXR-113 / RT25256)
+
+  - API CHANGE:
+     snmp-server interface subset *
+     snmp-server interface */ notification linkupdown
+    (IOSXR-110 / RT25251)
+
+
+cisco-iosxr v4.4.3 [October 10, 2016]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller dwdm * / g709 odu overhead tti
+    (IOSXR-103 / RT24972)
+
+  - Additions to the YANG model:
+     mpls traffic-eng / auto-tunnel p2p / tunnel-id
+     mpls traffic-eng / attribute-set p2p-te
+     mpls traffic-eng / attribute-set * pce
+     mpls traffic-eng / attribute-set * path-selection / metric
+    (IOSXR-107 / RT25157)
+
+Corrections:
+
+
+cisco-iosxr v4.4.2 [September 25, 2016]
+=======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller SONET * / report sd-ber
+    (IOSXR-104 / RT24973)
+
+  - Additions to the YANG model:
+     controller dwdm * / g709 otu overhead tti expected|sent
+     controller dwdm * / g709 tti-processing
+    (IOSXR-103 / RT24972)
+
+  - Added optional automatic ip address reconfiguration upon vrf change on interfaces.
+    Default is off. To enable:
+     devices device <devname> ned-settings cisco-iosxr-auto vrf-forwarding-restore true
+    (IOSXR-86 / RT24733)
+
+  - Additions to the YANG model:
+     evpn / interface * / ethernet-segment / identifier type 0
+     evpn / interface * / ethernet-segment / bgp route-target
+     interface nve* / member vni * /  host-reachabilty protocol bgp  [XR 5.3 spelling typo]
+     evpn / evi * / bgp / route-target import|export * stitching [API CHANGE]
+     router bgp * / address-family * / advertise * disable
+     router bgp * / neighbor * / address-family ? / import stitching-rt reoriginate [spelling diff]
+     router ospf * / cost
+    (IOSXR-86 / RT24733)
+
+  - Config expansions in router ospf * /
+    (IOSXR-86 / RT24733)
+
+  - Additions to the YANG model:
+     ipv4 netmask-format bit-count
+     redundancy / iccp / group * / mlacp connect timeout
+     snmp-server trap-timeout
+    (IOSXR-99 / RT24789)
+
+  - Additions to the YANG model:
+     ipv6 mobile pmipv6-lma * domain * / enforce heartbeat-to-mag
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop / customer * vrf *
+    (IOSXR-95 / RT24802)
+
+  - Additions to the YANG model:
+     service-policy apply-order
+     snmp-server group * [IPv4|IPv6] <access-list>
+     snmp-server mibs cbqosmib persist
+    (IOSXR-98 / RT24856)
+
+Corrections:
+
+  - API CHANGE:
+     l2vpn / bridge group * / bridge-domain * / member vni *  (leaf-list to list)
+     router bgp * / address-family * / advertise * local (leaf to presence container)
+    (IOSXR-86 / RT24733)
+
+  - Removed 'evpn / network-controller', use 'network-controller'.
+    (IOSXR-86 / RT24733)
+
+  - Fixed bad pattern for Serial subinterfaces.
+    (IOSXR-100 / RT24915)
+
+
+cisco-iosxr v4.4.1 [September 16, 2016]
+=======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     ipv6 mobile pmipv6-domain * / nai * / network
+     ipv6 mobile pmipv6-domain * / nai * / service
+     ipv6 mobile pmipv6-domain * / nai * / customer
+     ipv6 mobile pmipv6-lma * domain * / aaa accounting interim
+     ipv6 mobile pmipv6-lma * domain * / dynamic mag learning
+     ipv6 mobile pmipv6-lma * domain * / mobility-service mobile-local-loop
+    (IOSXR-94 / RT24801)
+
+  - Additions to the YANG model:
+     router bgp * / address-family * / redistribute mobile
+    (IOSXR-93 / RT24800)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / auto-bw / underflow threshold
+     ipsla / operation * / type udp * / statistics interval *
+     ipsla / operation * / type udp * / tag
+     ipsla / operation * / type udp * / tos
+     ipsla / reaction operation * / react connection-loss
+     ipsla / reaction operation * / react packet-loss
+     ipsla / reaction operation * / react rtt / threshold type average
+    (IOSXR-92 / RT24781)
+
+  - Additions to the YANG model:
+     alias exec|config *
+     bfd / interface * / echo
+     controller wanphy *
+     extcommunity-set soo *
+     hw-module subslot * shutdown powered|unpowered
+     interface * / ipv4 bgp policy propagation input qos-group destination
+     interface tunnel-tp *
+     l2vpn / capability
+     lpts punt police location *
+     mpls traffic-eng / load-share unequal
+     multicast-routing / address-family ipv4 / mdt default p2mp-te
+     router bgp * / address-family * / domain-distinguisher
+     router bgp * / address-family vpnv4 multicast
+     router bgp * / neighbor * / advertisement-interval
+     router bgp * / neighbor * / local address
+     router isis * / distribute bgp-ls
+     router pim / address-family ipv4 / interface * / dr-priority
+     router pim / address-family ipv4 / mdt c-multicast-routing * / unicast-reachability connector
+     rsvp / signalling message-bundle disable
+     ssh client dscp
+     track *
+    (IOSXR-88 / RT24737)
+
+  - Improved performance.
+    Replaced internal modifySet code with new meta-data code.
+
+
+Corrections:
+
+  - Strip string-remove-quotes meta-data tag which did not trigger.
+    (IOSXR-86 / RT24711)
+
+  - Remove whitespace when modifying interface ipv4 address using CIDR format.
+    (IOSXR-90 / RT24758)
+
+  - API CHANGE:
+     alias
+    Support for alias exec, alias config and generic alias.
+    Fixed support for special characters in alias string.
+    (IOSXR-88 / RT24737)
+
+  - API CHANGE:
+     router bgp * / address-family * / redistribute ospf
+    support for combinations of internal, external and nssa-external with values.
+    (IOSXR-88 / RT24737)
+
+
+cisco-iosxr v4.4 [September 09, 2016]
+=====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Support for white space in router bgp * / neighbor * / address-family * /
+     route-policy name.
+    Fix requires support for meta-data, causing increased NCS/NSO min versions.
+    (IOSXR-86 / RT24711)
+
+Corrections:
+
+  - Do not call abort if dectected server side closed.
+
+  - Fixed String index out of range bug when empty sets.
+    (IOSXR-84 / RT24657)
+
+  - Removed useless bug fix for service-function-chaining / metadata.
+     Issue must be solved in service code.
+    (IOSXR-58 / RT23794)
+
+
+cisco-iosxr v4.3.9 [September 02, 2016]
+=======================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller E3 * / framing
+     controller SONET * / path / scrambling
+     interface * / ipv4 redirects
+     interface * / multilink / fragment size
+     interface * / multilink / fragment-size
+     interface * / ppp multilink minimum-active links
+     interface ATM* point-to-point
+     interface ATM* / pvc * / encapsulation aal5mux|aal5nlpid|aal5snap
+     interface ATM* / pvc * / oam retry
+     interface ATM* / pvc * / oam-pvc manage
+     interface ATM* / pvc * / shape vbr-nrt
+     router rip
+     router rip / vrf *
+     router rip / timers basic
+     router rip / interface * / passive-interface
+     router rip / redistribute static
+     router rip / redistribute bgp *
+    (IOSXR-82 / RT24581)
+
+  - Additions to the YANG model:
+     bfd / dampening bundle-member l3-only-mode
+     mpls traffic-eng / attribute-set * / forward-class
+     mpls traffic-eng / bfd lsp head down-action
+     mpls traffic-eng / logging events all
+     mpls traffic-eng / reoptimize timers delay after-frr
+     router isis * / nsf lifetime
+     router isis * / nsf interface-timer
+     router isis * / lsp-check-interval
+     router isis * / address-family * / mpls traffic-eng multicast-intact
+     router isis * / address-family * / monitor-convergence / track-ip-frr
+    (IOSXR-81 / RT24552)
+
+Corrections:
+
+  - Fixed problem with NED blocking (write-timeout) when transmitting invalid
+     config.
+    (IOSXR-67 / RT24203)
+
+
+cisco-iosxr v4.3.8 [August 26, 2016]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     flow exporter-map * / version v9 / options interface-table timeout
+     flow exporter-map * / version v9 / options sampler-table timeout
+     flow exporter-map * / version v9 / template data timeout
+     flow exporter-map * / version v9 / template options timeout
+    (IOSXR-78 / RT24496)
+
+  - Additions to the YANG model:
+     interface * / backup-bw unlimited
+    (IOSXR-77 / RT24489)
+
+Corrections:
+
+  - API CHANGE:
+     class-map * / match precedence
+    changed due to erronous design, lacking support of ipv4, ipv6 etc.
+    (IOSXR-79 / RT24497)
+
+  - Added workaround for old Maapi.attach() bug which could cause an error, now
+    uses 2-arg version of attach() which avoids problem in NCS prior to 4.1.
+   (IOSXR-55 / RT23735)
+
+
+cisco-iosxr v4.3.7 [August 19, 2016]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router bgp * / address-family * / maximum-paths eibgp
+     router bgp * / neighbor * / address-family * / multipath
+    (IOSXR-76 / RT24383)
+
+  - Additions to the YANG model:
+     multicast-routing / address-family ipv4 / mdt data a.b.c.d threshold|acl-name
+    (IOSXR-75 / RT24357)
+
+  - Additions to the YANG model:
+     controller E1|T1 * / linecode
+     flow exporter-map * / version v9 / options interface-table
+     hw-module mac-move location * port * breakout
+     hw-module subslot *
+     router bgp * / address-family * / bgp client-to-client reflection disable
+     router bgp * / address-family * / redistribute rip
+     router bgp * / address-family * / table-policy
+     router bgp * / neighbor * / address-family ? / remove-private-AS entire-aspath
+     router isis * / lsp-mtu
+     router isis * / metric-style ? level 1|2
+     router static / address-family ipv6 unicast / * vrf *
+     snmp-server community * / [IPv4|IPv6] <access-list>
+   (IOSXR-64 / RT24015)
+
+  - Support for a/b/c/d/e naming in Ethernet interfaces.
+   (IOSXR-64 / RT24015)
+
+  - API CHANGE:
+    Removed version leaf (not config). Replaced with below:
+    Added info from output of 'show version in cached-show container in
+    tailf-ned-cisco-iosxr module for fast access in service code. Info is
+    updated upon connect, i.e. may change if output of show version changes.
+    Default enabled. Disable by setting:
+     ned-settings cisco-iosxr-cached-show-enable version false
+    Example output:
+     admin@ncs# show running-config devices device asr9k-1 config cached-show
+     devices device asr9k-1
+      config
+       cached-show version version 5.1.2
+       cached-show version model ASR9K
+    Note: Even though this info is in config, obviously it is not config
+          and can not be set on the device. Trying to set it will only
+          change the value in NCS, not on device.
+    (IOSXR-71 / RT24287)
+
+Corrections:
+
+  - API CHANGE: Added support for nsr disable, changing leaf nsr
+     to a presence container.
+   (IOSXR-64 / RT24015)
+
+  - Added cli-multi-word-key to route-policy name
+   (IOSXR-64 / RT24015)
+
+  - Do not (re-)quote '# description entries' in route-policy.
+   (IOSXR-64 / RT24015)
+
+
+cisco-iosxr v4.3.6 [August 12, 2016]
+====================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added new package parameter "requires-transaction-states".
+    This will instruct the NSO that this NED can not be used together
+    with commit queues.
+
+Corrections:
+
+  - Added 'ordered-by user' to tacacs-server host *
+    (IOSXR-72 / RT24295)
+
+  - Restored extcommunity-set rt, rd-set, prefix-set, as-path-set and
+     community-set broken with a bad fix in v4.3.4 [July 22, 2016].
+    (IOSXR-60)
+
+  - Added tailf:cli-remove-before-change to:
+     class-map * /  match access-group ipv4
+     class-map * /  match access-group ipv6
+    (IOSXR-70 / RT24251)
+
+
+cisco-iosxr v4.3.5 [August 5, 2016]
+===================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / loopback
+     controller dwdm * / g709
+     controller dwdm * / loopback
+    (IOSXR-65)
+
+  - Additions to the YANG model:
+     router ospf * / domain-id
+    (IOSXR-66)
+
+Corrections:
+
+  - Changed enumeration disabled/enabled to disable/enable/sometimes in following leaf
+     router isis / interface * / hello-padding
+    (IOSXR-68)
+
+  - Fixed prompt matching in ApplyException handling.
+    Fixed exitConfig2(..), NED will send "exit" command only if session in config mode.
+    (IOSXR-67)
+
+
+cisco-iosxr v4.3.4 [July 22, 2016]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     clock/timezone/hours-offset
+     clock/timezone/minutes-offset
+     ssh/server/vrf*/ipv4
+    (IOSXR-59)
+
+  - Additions to the YANG model:
+     interface * / pvc * / fragment
+     interface Serial * / multilink
+     controller <T1|T3> * / bert
+     controller <T1|T3> * / shutdown
+     controller <T1|T3> * / loopback
+     controller T3 * / dsu / mode
+     controller T3 * / dsu / remote
+    (IOSXR-61)
+
+Corrections:
+
+  - JAVA bug fixes:
+     Fixed NavuList path for 'extcommunity-set rt' in modifySet(..) method.
+    (IOSXR-60)
+
+  - Added tailf:cli-multi-value annotation in following leaf
+    /aaa/authorization/commands/group, so following configs are suported
+     - aaa authorization commands default group .* none
+     - aaa authorization commands default group .* group .* none
+     - aaa authorization commands default group .* group .* group .*
+    (IOSXR-59)
+
+cisco-iosxr v4.3.3 [July 15, 2016]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     cdp advertise v1
+     router isis * / address-family * / adjacency-check disable
+     router isis * / address-family ipv6 * / single-topology
+     tacacs-server host * / timeout
+    (RT23616)
+
+  - NED sends remove command 'no metadata <name>' before modifying /service-function-chaining/metadata'
+    (editing medatadata is not allowed. So, NED deletes it fi<rst and re-created it.)
+    (IOSXR-58 / RT23794)
+
+Corrections:
+
+  - YANG bug fixes:
+     Added missing compact-syntax in: router isis * / lsp-gen-interval
+     Removed display-separated on: router isis * / set-overload-bit
+    (RT23616)
+
+
+cisco-iosxr v4.3.2 [June 30, 2016]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller preconfigure
+     controller T1 * / description
+     controller T1 * / mode
+     controller T3 * / cablelength
+     controller T3 * / description
+     controller T3 * / dsu / bandwidth
+     controller T3 * / framing
+    (IOSXR-54)
+
+  - Let '| prompts' answers override auto-prompts ned-setting in live-status
+    exec and config exec commands.
+    (RT23699)
+
+Corrections:
+
+  - Return error in live-status exec and config exec when missing answer to prompt.
+    (RT23686)
+
+  - Fixed problem with live-status exec ping command.
+    (RT23640)
+
+
+cisco-iosxr v4.3.1 [June 24, 2016]
+==================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+Corrections:
+
+  - Fixed bad range on policy-map / class / police peak-rate.
+    (RT23605)
+
+  - Do not prompt on live-status exec show commands.
+    (RT23355)
+
+
+cisco-iosxr v4.3 [June 17, 2016]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Added cisco-iosxr-show-running-strict-mode ned-setting in order to be able
+    to parse show running-config with name conflicts. Sub mode level "!" are
+    replaced with "exit" and top mode "!" with "root". Set to true to enable.
+    Default false.
+
+  - Additions to the YANG model:
+     lmp / gmpls optical-uni / controller *
+     lmp / gmpls optical-uni / neighbor *
+     lmp / gmpls optical-uni / router-id ipv4 unicast
+     mpls traffic-eng / attribute-set * exclude *
+     mpls traffic-eng / gmpls optical-uni
+   (RT23399)
+
+Corrections:
+
+  - API CHANGE:
+    extcommunity-set rt, rd-set, prefix-set, as-path-set and community-set must
+    (or rather need) no longer contain a comma ',' in the end of each entry.
+    Reason being support has been implemented for modifying existing sets by
+    resending all entries after modification.
+    (RT23158
+
+  - If answer (sent by prompts) is only one character, don't send NL (newline).
+
+  - Fixed error handling bug which caused the invalid line to not be reported.
+    Instead a EOF was reported because the NED sent too many exit commands to
+    the device.
+    (RT23358)
+
+  - NCS/NSO workaround:
+    Trim quotes erronously inserted by service node in live-status exec cmd.
+    (RT23355)
+
+
+cisco-iosxr v4.2 [June 10, 2016]
+================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - New ned-setting - cisco-iosxr-config-warning - which can be used to
+    ignore device output which is currently treated as an error, causing an
+    exception. See README file for more information.
+    (RT23369)
+
+  - Default to cisco-iosxr-transaction-id-method commit-list. Change to
+    config-hash for previous default method (note: much slower).
+
+  - Added 'any' exec command under live-status to be able to execute any IOS
+    command on the device. For example:
+    admin@ncs# devices device asr9k live-status exec any "show ppp summary"
+    (IOSXR-45)
+
+  - Added support for passing answers to prompts in live-status exec commands.
+    Append '| prompts <answer1> [answer2]' to command.
+    Note: For hitting enter only on a prompt, add the prompt key 'ENTER'
+    Examples:
+     devices device asr9k live-status exec any "reload | prompts yes"
+
+    Also implemented a ned-setting - cisco-iosxr-auto-prompts - which can be
+    used to register standard answers to standard questions. For example:
+    devices global-settings ned-settings cisco-iosxr-auto-prompts Q1 question
+      "Proceed with reload" answer "yes"
+    See README file for more info.
+
+Corrections:
+
+  - Split class-map * / match dscp lines into multiple lines of maximum eight
+    entries per line.
+    (RT23321)
+
+
+cisco-iosxr v4.1.7 [June 3, 2016]
+=================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router hsrp / interface * / address-family ipv6
+    (RT23278)
+
+  - Additions to the YANG model:
+     multicast-routing / address-family ipv4 / mdt default mldp *
+   (IOSXR-43)
+
+  - Additions to the YANG model:
+     router ospf * / area * / prefix-sid
+    (RT23243)
+
+Corrections:
+
+
+cisco-iosxr v4.1.6 [May 26, 2016]
+=================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router hsrp / interface * / hsrp use-bia
+    (IOSXR-37)
+
+  - Additions to the YANG model:
+     evpn / evi * / interface *
+     interface nve* / anycast source-interface Loopback
+     interface nve* / redundancy
+     router bgp * / neighbor * / address-family ? / import stitching-rt re-originate
+     router bgp * / neighbor * / address-family ? / remove-private-AS
+     router bgp * / address-family * / advertise l2vpn evpn
+    (RT22957)
+
+  - Additions to the YANG model:
+     interface * / ipv4 address * route-tag
+    (RT23114)
+
+Corrections:
+
+  - API CHANGE:
+     router bgp * / address-family * / advertise * re-originated
+     neighbor * / address-family ? / import re-originate  (was reoriginate)
+    (RT22957)
+
+
+cisco-iosxr v4.1.5 [May 20, 2016]
+=================================
+
+General:
+
+Enhancements:
+
+  - Additions to the YANG model:
+     controller T1 * / carrier-delay
+     interface * / frame-relay lmi disable
+     interface * / frame-relay multilink
+     interface Serial * point-to-point
+     l2vpn / nsr
+     l2vpn / logging / nsr
+     multicast-routing / address-family ipv4 / interface * / disable
+     router bgp * / address-family * / allowas-in
+     router bgp * / address-family * / bgp dampening
+     router bgp * / address-family * / weight
+     router bgp / bgp label-delay
+     router bgp / bgp import-delay
+     router bgp * / vrf * / label-allocation-mode
+     router pim / address-family ipv4 / maximum routes
+    (RT23016)
+
+  - Additions to the YANG model:
+     dhcp ipv4 / profile * / default-router *
+     dhcp ipv4 / profile * / pool
+     pool vrf * ipv4 *
+    (RT22988)
+
+Corrections:
+
+
+
+cisco-iosxr v4.1.4 [May 12, 2016]
+=================================
+
+General:
+
+    Look for 'API CHANGE' below to see what changes have been made that may
+    not be backwards compatible.
+
+Enhancements:
+
+  - Additions to the YANG model:
+     router hsrp / interface * / hsrp bfd
+    (RT22932)
+
+  - Additions to the YANG model:
+     group *
+     mpls traffic-eng / auto-tunnel mesh
+     mpls traffic-eng / attribute-set auto-mesh *
+     mpls traffic-eng / ds-te
+     rsvp / interface * / bandwidth rdm
+     router isis * / nsr
+    (RT22884)
+
+ - Expanded YANG model in:
+     mpls traffic-eng / attribute-set * /
+    (RT22884)
+
+Corrections:
+
+  - API CHANGE: mpls traffic-eng / attribute-set *
+
+  - Added cli-replace-all on 'line * / transport input|output'.
+    Note: Had some problem as in cisco-ios RT22717.
+
+
+cisco-iosxr v4.1.3 [April 29, 2016]
+===================================
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / service-policy type pbr
+     policy-map * / class * / service-function-path
+     service-function-chaining
+    (RT22720)
+
+  - Added cisco-iosxr-config-method ned-setting config option in order
+    to be able to configure what command is used to enter config mode:
+     exclusive - Configure exclusively from this terminal (DEFAULT)
+     terminal - Configure from the terminal
+    (RT22655)
+
+  - Added cisco-iosxr-commit-method ned-setting to control which commit
+    method will be used.
+     confirmed - Use 'commit confirmed' followed by a 'commit' (DEFAULT).
+     direct    - Use a single 'commit'.
+    (RT22552)
+
+  - Added cisco-iosxr-log-verbose ned-settings option to enable extra
+    verbose logging in NED (for debugging).
+
+  - Improved drned test system. Removed old lux tests.
+    (IOSXR-22)
+
+Corrections:
+
+  - Answer 'y' if get 'Confirm? [y/n][confirm]' prompt in commit.
+
+  - Fixed support for compact ipv6 address format in router bgp * / neighbor
+    (RT22684)
+
+  - Expanded range on l2vpn / bridge group * / bridge-domain * / vfi * / vpn-id
+    (RT22697)
+
+
+cisco-iosxr v4.1.2 [April 6, 2016]
+==================================
+
+Enhancements:
+
+  - Additions to the YANG model:
+     interface * / l2transport / l2protocol cpsv
+    (IOSXR-21)
+
+  - Additions to the YANG model:
+     ipsla / responder / twamp
+     l2vpn / xconnect group * / mp2mp * / auto-discovery bgp / route-target import *
+     l2vpn / xconnect group * / mp2mp * / auto-discovery bgp / route-target export *
+
+Corrections:
+
+  - API CHANGE: l2vpn / xconnect group * / mp2mp * / auto-discovery bgp / route-target *
+  - API CHANGE: dhcp ipv4 / profile * / relay information option vpn-mode
+  - API CHANGE: l2vpn / bridge group * / bridge-domain * / flooding
+  - API CHANGE: dhcp ipv4|ipv6 / profile * / helper-address vrf *
+
+  - Removed non-XR config: logging persistent
+
+
+cisco-iosxr v4.1.1 [March 30, 2016]
+===================================
+
+Enhancements:
+
+  - Additions to the YANG model:
+     snmp-server community-map *
+     snmp-server context *
+     snmp-server vrf * / context *
+    (IOSXR-19)
+
+  - Removed all specific snmp-server traps. Use the generic list.
+
+  - Optimized cli-diff-dependencies.
+    (IOSXR-18)
+
+  - Support for EXEC proxy login configuration, which can be used to access
+    a device through a terminal server which requires extra command.
+    Configure cisco-iosxr-proxy-settings under ned-settings to enable.
+    See README file for example.
+    (IOSXR-15)
+
+  - Do not log telnet login password in trace.
+
+  - Support for SSH/TELNET proxy login configuration.
+    Configure cisco-iosxr-proxy-settings under ned-settings to enable.
+    See new README file for example.
+
+  - Additions to the YANG model:
+     bfd / interface * / echo
+     router ospf * / area * / fast-reroute per-prefix
+     router ospf * / area * / stub
+     router ospf * / area * / multi-area-interface *
+      (RT21731)
+     router isis * / address-family * / ispf level
+      (RT21759)
+     router hsrp / interface * / hsrp delay
+      (RT21791)
+
+
+Corrections:
+
+  - API CHANGE: router static / address-family ipv4|ipv6 unicast / *
+
+  - Did not support multiple entries in combo of net,interface and ip.
+    (RT22185)
+
+  - Fixed null pointer exception with no-statements in set's.
+    (RT22047)
+
+
+cisco-iosxr v4.1   [Jan 08, 2016]
+===================================
+
+Increased <ncs-min-version> to 3.3.6 (tr13094)
+
+Changes that might affect a package upgrade from release 4.0.1:
+    interface * / ipv6 address
+    interface * / ipv6 nd prefix
+    router static / address-family ipv6 unicast / *
+    router static / vrf * / address-family ipv6 unicast / *
+    control-plane / management-plane / ? / interface * / allow address ipv6 *
+    ethernet cfm / domain * / service * / continuity-check interval
+    All 'uses bgp-address-family-ipv6-grouping'
+
+Enhancements:
+
+  - Additions to the YANG model:
+    l2vpn / xconnect group * / mp2mp * / auto-discovery bgp / route-target *
+    l2vpn / xconnect group * / mp2mp * / auto-discovery bgp / signaling-protocol
+    l2vpn / xconnect group * / mp2mp * / control-word
+    l2vpn / xconnect group * / mp2mp * / l2-encapsulation
+    l2vpn / xconnect group * / mp2mp * / mtu
+    l2vpn / xconnect group * / mp2mp * / vpn-id
+    l2vpn / xconnect group * / p2p * / neighbor * / tag-impose
+    router ospf * / authentication
+    router ospf * / message-digest-key
+    router ospf * / timers pacing
+    line * / escape-character
+    router bgp * / address-family * / distance
+    router bgp * / address-family ipv6 multicast
+    router bgp * / neighbor * / address-family ipv6 multicast
+    router bgp * / neighbor * / address-family ? / default-originate route-policy
+    router bgp / bgp graceful-restart graceful-reset
+    router bgp * / session-group * / use
+    domain ipv4
+    ntp server * key
+    ntp authentication-key *
+    ntp authenticate
+    ntp trusted-key
+    dhcp ipv4 / profile * / relay
+    flow monitor-map * / record mpls
+    flow monitor-map * / cache entries
+    flow monitor-map * / cache timeout inactive
+    flow monitor-map * / cache timeout rate-limit
+    flow monitor-map * / cache timeout update
+    as-path-set ios-regex
+    mpls ldp / address-family ipv4 / label / local / advertise / disable
+    l2vpn / bridge group * / bridge-domain * / flooding
+    logging host * port
+    ipv6 conflict-policy
+    ipv6 prefix-list *
+
+  - Broke out container bfd from router-ospf-area-grouping and put it into
+    separate grouping bfd-common-parameters-grouping to be reused in:
+     router bgp * / neighbor * / bfd
+     router bgp * / session-group * / bfd
+     router pim / address-family ipv4 / interface * / bfd
+    (note: ranges are chosen to accomodate widest needed)
+
+Corrections:
+
+ - Replaced custom type ipv6-prefix with
+   tailf:ipv6-address-and-prefix-length. This will take advantage of NCS
+   built-in canonicalization of ipv6 addresses (i.e. case-insensitivity +
+   compression).
+
+
+cisco-iosxr v4.0.1.2 [Dec 09, 2015]
+===================================
+
+Enhancements:
+
+  - Additions to the YANG model:
+    interface * / ethernet cfm / ais
+    interface tunnel-te* / autoroute destination *
+    interface tunnel-te* / forward-class
+    interface tunnel-mte*
+    multicast-routing / address-family ipv4 / mdt data p2mp-te
+    multicast-routing / address-family ipv4 / mdt default p2mp-te
+    multicast-routing / address-family ipv4 / bgp
+    router pim / address-family ipv4 / rpf
+    router pim / address-family ipv4 / mdt
+    ethernet cfm / domain * / service * / continuity-check interval loss-threshold
+    ethernet cfm / domain * / service * / continuity-check archive
+    ethernet cfm / domain * / service * / continuity-check loss
+    ethernet cfm / domain * / service * / log ais
+    ethernet cfm / domain * / service * / log crosscheck
+    l2vpn / pw-class * / encapsulation mpls / preferred-path fallback
+    mpls traffic-eng / attribute-set p2mp-te *
+
+Corrections:
+
+  - Changed 'ethernet cfm / domain * / service * / continuity-check interval'
+    to container to be able to model containers archive and loss within
+    continuity-check
+
+
+cisco-iosxr v4.0.1.1 [Dec 07, 2015]
+===================================
+
+Enhancements:
+
+ - Additions to the YANG model:
+    router ospf * / area * / dead-interval
+    router ospf * / distance ospf
+    router ospf * / redistribute isis *
+    router isis * / address-family * / mpls ldp sync level
+    router isis * / address-family * / redistribute ospf
+    router isis * / address-family * / redistribute ospfv3
+    class-map * / match dei
+    interface tunnel-te* / affinity-value
+    interface tunnel-te* / path-option * attribute-set
+    interface tunnel-te* / path-option * protected-by
+    router bgp * / timers
+    router bgp / bgp bestpath as-path
+    multicast-routing / address-family ipv4 / interface-inheritance
+    router pim / address-family ipv4 / interface * / enable
+    explicit-path identifier *
+    nv / satellite * / description
+    nv / satellite * / secret
+    snmp-server packetsize
+    snmp-server ipv4 precedence
+    snmp-server interface *
+    spanning-tree mst * / instance * / vlan-ids
+    hw-module mac-move
+    router isis * / interface * / hello-interval
+    mpls traffic-eng / interface * / attribute-flags
+    mpls traffic-eng / interface * / backup-path
+    mpls traffic-eng / attribute-set
+    mpls ldp / address-family ipv4 / label / local / advertise
+
+    Added enum value 'disable' to severity-type
+
+Corrections:
+
+  - Moved container bfd from non-subinterface-common-grouping to new grouping
+    interface-bfd-and-addr-family-grouping to be able to model interface
+    tunnel-te correctly
+
+  - Added 'ordered-by user' to 'policy-map * / class *'
+
+
+cisco-iosxr v4.0.1 [Nov 25, 2015]
+=================================
+
+Enhancements:
+
+ - Expanded YANG model in:
+    ipsla
+
+ - Additions to the YANG model:
+    dhcp ipv4 / profile * / giaddr policy
+    ethernet cfm / domain * / service * down-meps
+    ethernet cfm / domain * / service * / mep crosscheck
+    forward-protocol udp *
+    ftp client password
+    ftp client username
+    multicast-routing / address-family ipv4 / mdt source
+    performance-mgmt statistics
+    router bgp * / address-family ipv4 multicast
+    router ospf * / redistribute connected
+    router-convergence / collect-diagnostics *
+    rpl editor
+    (RT20884)
+
+  - The NED is now configurable regarding the max number of command lines it
+    shall send in a chunk to the device. Default is 100.
+    A higher number usually gives better performance but can also
+    have negative impact on the NEDs error detection ability. If an error
+    occurs in the middle of the 'chunk' the execution will continue with the
+    remaining lines. This can result in that for instance a config leaf is
+    accidentally set.
+
+    Note, the cisco-iosxr NED was previously hard coded to send chunks of
+    1000 commands at a time.
+
+    To set to one command per chunk, do as follows in the NCS/NSO CLI:
+    $ devices device <name> ned-settings cisco-iosxr-number-of-lines-to-send-in-chunk 1
+    $ commit
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / vfi * / autodiscovery bgp /
+      signaling-protocol
+     interface * / nv / edge / interface
+     l2vpn / autodiscovery bgp / signaling-protocol bgp
+     mirror location *
+     ospf name-lookup
+     router bgp * / neighbor * / local-as
+     router mld / vrf *
+     router ospf * / ignore lsa mospf
+     router ospf * / passive
+     router ospf * / queue limit
+     router static / maximum path
+     taskgroup * / task debug *
+
+  - Additions to the YANG model:
+     evpn / evi * / network-controller / host * / ipv4 address
+     interface nve *
+     l2vpn / bridge group * / bridge-domain * / member vni *
+     l2vpn / router-id
+     router bgp * / address-family * / advertise vpnv4|vpnv6 unicast
+     neighbor * / address-family ? / import
+     router bgp * / address-family * / label mode
+     router bgp * / neighbor * /  ignore-connected-check
+     vrf * / address-family ipvX unicast / XXport route-target / * stitching
+
+  - Additions to the YANG model:
+     interface FortyGigE
+     router ospf * / distribute-list
+     router static / address-family ipv4 unicast / * vrf *
+
+Corrections:
+
+  - Fixed problem when config error and abort, dead locking ncs.
+
+  - router ospf * / default-information
+
+  - Removed choice from router bgp * / neighbor * / use neighbor-group
+     and use session-group.
+    (RT20723)
+
+  - Added netmask leaf: evpn / evi * / network-controller / host * / gateway
+
+
+cisco-iosxr v4.0 [Sept 30, 2015]
+================================
+
+Enhancements:
+
+  - Support for NSO-4.1
+
+  - Additions to the YANG model:
+     interface * / encapsulation dot1ad * exact
+     mpls traffic-eng / auto-tunnel pcc / tunnel-id
+     l2vpn / bridge group * / bridge-domain * / neighbor * / split-horizon
+
+  - Implemented basic support for segment routing.
+    Additions to the YANG model:
+     interface tunnel-te* / path-selection / segment-routing adjacency
+     icmp ipv4 rate-limit unreachable
+     mpls traffic-eng / interface * / attribute-names
+     mpls traffic-eng / interface * / admin-weight
+     mpls traffic-eng / pce
+     router bgp * / address-family link-state link-state
+     router ospf * / segment-routing
+     router isis * / address-family * / segment-routing
+     router isis * / interface * / address-family ipv4 unicast / prefix-sid
+     segment-routing / global-block
+
+  - EPN 4.0 support for MEF and TI (Transport infrastructure).
+    Additions to the YANG model:
+     ethernet cfm / traceroute cache
+     ipv4 prefix-list *
+     l2vpn / pw-class * / encapsulation mpls / redundancy
+     l2vpn / redundancy
+     logging disable
+    (RT18042, RT18278)
+
+  - Expanded the YANG model in:
+     mpls ldp
+     router bgp
+     router isis
+
+  - Additions to the YANG model:
+     router vrrp / interface * / address-family ipv6 / vrrp * / address linklocal
+
+  - Expanded the YANG model in:
+     spanning-tree mst *
+    (RT19095)
+
+  - Additions to the YANG model:
+     class-map * / match vpls
+     controller E3 *
+     explicit-path name * / index * next-label
+     interface FastEthernet*
+     interface POS* (subinterface)
+     interface * / dot1ad
+     interface * / flow-control
+     l2vpn / bridge group * / bridge-domain * / mac / learning
+     l2vpn / bridge group * / bridge-domain * / pbb / edge *
+     l2vpn / pw-class * / encapsulation mpls / preferred-path
+     line * / secret
+     mpls ldp / session protection
+     multicast-routing / vrf *
+     ntp interface * / broadcast
+     policy-map * / class * / police * / child-conform-aware
+     router bgp / bgp auto-policy-soft-reset disable
+     router bgp / default-information originate
+     router bgp / neighbor * / address-family ? / site-of-origin
+     router pim / vrf *
+     snmp-server entityindex
+    (RT19558, RT19803)
+
+  - Expanded the YANG model in:
+     controller E1 *
+     controller SONET *
+     interface * / service-policy
+     policy-map * / class * / random-detect
+
+  - Additions to the YANG model:
+     router bgp * / neighbor * / ttl-security
+    (RT19564)
+
+Corrections:
+
+  - Changed interface IPv4 address api
+    (RT20158)
+
+  - Dirty 'mpls traffic-eng / auto-tunnel backup' fix
+
+  - clock-interface / frequency synchronization / quality
+    (RT20025)
+
+  - Quote and dequote description strings.
+
+  - Changed network-controller / switch * from container to list.
+
+  - Corrected interface * / dot1q vlan, added second vlan id. API change.
+    (RT19803)
+
+  - Use 'show version' if 'show version brief' fails in login check.
+    (RT19788)
+
+  - Fixed regexp for exec commands when prompted to continue.
+    (RT19832)
+
+  - Fixed dependency problem when delete of class-map.
+    (RT19802)
+
+This NED does require NCS version 3.2.4 or later.
+
+
+cisco-iosxr v3.10.0 [June 23, 2015]
+===================================
+
+Enhancements:
+
+  - Support for NSO-4.0 (changed name from NCS to NSO).
+
+  - The NED is now compliant with NSO 4.0 regarding registering
+    platform information. Try 'show devices device platform'
+
+   - Additions to the YANG model:
+      evpn / evi *
+      evpn / network-controller
+      l2vpn / bridge group * / bridge-domain * / evpn evi
+      router bgp * / address-family l2vpn evpn
+      router bgp * / neighbor * / address-family l2vpn evpn
+     (RT18949)
+
+  - Expanded controller SONET config.
+    (RT19125)
+
+  - Additions to the YANG model:
+     snmp-server vrf *
+     spanning-tree mst *
+     control-plane / management-plane / out-of-band / interface * / ..
+       allow * peer / address ipv4 *
+
+  - Additions to the YANG model:
+     bfd / interface *
+     bfd / multihop|multipath
+     class-map * / match source-address ipv4 *
+     interface * / affinity include *
+     interface * / affinity include-strict *
+     line * / telnet transparent
+     policy-map * / class * / random-detect default
+     router bgp * / neighbor * / enforce-first-as
+     router ospf * / mpls ldp auto-config
+    (RT18775, RT18822, RT18719)
+
+  - Added basic support for BGP flowspec.
+
+  - Additions to the YANG model:
+     class-map * / match destination-address ipv4 *
+     class-map * / match destination-port
+     class-map type traffic
+     flowspec / address-family ipv4 / service-policy
+     interface * / encapsulation ambiguous dot1q
+     interface * / service-policy input|output * subscriber-parent
+     l2vpn / bridge group * / bridge-domain * / interface * / split-horizon
+     netconf-yang agent ssh
+     policy-map type
+     policy-map * / class type traffic *
+     policy-map * / class * / redirect nexthop
+     router bgp * / address-family ipv4 flowspec
+     router bgp * / address-family vpnv4 flowspec
+     router bgp * / neighbor * / address-family ipv4 flowspec
+     vrf * / address-family ipv4 flowspec
+     xml agent / iteration
+    (RT17853, RT18775, RT18805)
+
+  - Additions to the YANG model:
+     interface tunnel-te* / autoroute metric
+     interface tunnel-te* / load-share
+   (RT18719)
+
+  - Added 'IOS XR Configuration' version number to 'version' leaf.
+
+  - Added NCS version and NETSIM confd&NED version in ned trace.
+
+  - Additions to the YANG model:
+     vrf * / vpn id
+     router bgp * / address-family * / bgp dampening
+     router ospf * / area * / nssa
+    (RT18536, RT18534)
+
+  - Additions to the YANG model:
+     l2vpn / bridge group * / bridge-domain * / neighbor * / storm-control
+     router isis * / address-family * / redistribute connected
+     router isis * / address-family * / advertise passive-only
+    (#12810) (#12811)
+
+  - Additions to the YANG model:
+     igmp snooping profile *
+     interface * / nv / satellite-fabric-link # / redundancy
+     l2vpn / bridge group * / bridge-domain * / igmp snooping
+     l2vpn / bridge group * / bridge-domain * / storm-control
+     mpls ldp / neighbor / * password
+     mpls ldp / address-family ipv4
+     nv / satellite * / redundancy
+     nv / satellite * / serial-number
+     redundancy / iccp / group * / backbone
+     redundancy / iccp / group * / nv satellite
+    (#12756)
+
+  - Additions to the YANG model:
+     cem
+     controller E1 *
+     ethernet sla
+     ethernet cfm
+     interface ATM *
+     interface CEM *
+     interface * / ethernet cfm
+     ipsla / operation *
+     ipsla / schedule operation *
+     router bgp / neighbor / address-family / send-extended-community-ebgp
+    (#12717)
+
+Corrections:
+
+  - logging console disable always became logging console alerts
+
+  - Fixed bug with reading/writing banners.
+
+  - Changed logging host * type to union of IPv4/IPv6 address.
+
+  - Updated class-map * / match protocol values.
+
+  - Updated policy-map * / class * / redirect nexthop
+
+  - Fixed problem with replacing interface * / service-policy (API change!)
+
+  - Added 'tailf:cli-preformatted' to all description leaves to suppress
+     quoting of non-config elements when displaying them.
+    (#12879)
+
+  - Fixed interface * / encapsulation dot1q|dot1ad vlan ranges.
+
+  - Fixed bug in l2vpn / bridge group * / bridge-domain * / routed interface
+    (#12717)
+
+This NED does require NCS version 3.2.2 or later.
+
+
+cisco-iosxr v3.8.0 [March 12, 2015]
+===================================
+
+Enhancements:
+
+   - Support for NCS-3.4.
+
+   - Added support for generic-interface-list / interface config.
+     (#12557 / RT17938)
+
+Corrections:
+
+   - None.
+
+This NED does require NCS version 3.2.2 or later.
+
+
+cisco-iosxr v3.6.0 [February 11, 2015]
+======================================
+
+Enhancements:
+
+   - Support for NCS-3.3.
+
+   -  Added ping, clear, traceroute, copy and reload commands
+      under live-status, e.g.:
+       devices device asr9k live-status exec ping 192.168.1.1
+       devices device asr9k live-status exec clear ppp queues
+       etc.
+      (#12479 / RT17836)
+
+   -  Added timer config in bfd address-family ipv4 interface config.
+      (#12433 / RT17684)
+
+   -  Added route-policy config to vrf address-family export/import.
+
+   -  Expanded rewrite ingress tag sub-interface config.
+      (#12392 / RT17606)
+
+   -  Expanded interface tunnel-te config.
+      (#12360 / RT17573)
+
+   -  Added PW-Ether interface and sub-interface.
+      (RT17184)
+
+   -  Expanded router bgp.
+      (#12478 / RT17851)
+
+   -  Expanded ospf and ospfv3 config.
+      (#12318 / RT17410)
+
+   -  Implemented basic support for router hsrp.
+      (#12450 / RT17768)
+
+   -  Added level option to isis router metric config.
+      (#12390 /RT17600)
+
+   -  Generate a java namespace files for all yang modules.
+      (RT16500)
+
+   -  Added domain list config.
+      (#12319 / RT17383)
+
+   -  Added generic snmp-server traps list accepting all entries.
+
+   -  Added support for explicit-path config.
+      (#12270)
+
+   -  Send initial newline to device for terminal support.
+      (RT16500)
+
+
+Corrections:
+   -  Strip no commands inside extcommunity-set, rd-set, prefix-set,
+      as-path-set and community-set on real devices.
+      (#12253 / RT17090)
+
+   -  Improved prompt matching in java code to avoid deadlock when setting
+      complex descriptions (e.g. with '#' and '(' etc).
+      (#12493 / RT17866)
+
+   -  Removed all 'tailf:cli-no-keyword' on non policy-map config.
+
+   -  Use cmdwrapper instead of cmdptywrapper in cli spec.
+      (#12277)
+
+This NED does require NCS version 3.2.2 or later.
+
+
+cisco-iosxr v3.4.0 [November 26, 2014]
+======================================
+
+Enhancements:
+   -  The method to use by the NED for calculating transaction ID is now a
+      configurable option.
+      The config option cisco-iosxr-transaction-id-method is available under:
+
+      /ncs:devices/global-settings/ned-settings/
+      /ncs:devices/ncs:profiles/profile:cisco-iosxr/ned-settings/
+      /ncs:/device/devices/device:<dev name>/ned-settings/
+
+      Two values are supported:
+      config-hash (default) : Use a snapshot of the running config for
+                              calculation.
+      commit-list :           Use the configuration commit list time of
+                              the latest commit for calculation.
+
+   -  Implemented support for 'crypto key' exec commands under live-status,
+        e.g.: devices device asr9k live-status exec crypto key generate rsa
+
+   -  Expanded router ospf, router pim, router igmp and router static.
+      (Issue tracker: #17163)
+
+   -  Implemented basic support for router ospfv3.
+      (Issue tracker: #17163)
+
+   -  YANG data model updates: class-map / match vlan
+
+   -  YANG data model updates: l2vpn
+
+   -  Numerous YANG model expansions in various areas.
+      (Issue tracker: #17163)
+
+Corrections:
+   -  Fixed two problem with class-map / match dscp, ordering and ipv4/ipv6.
+
+This NED does require NCS version 3.1.3 or later.
+
+
+cisco-iosxr v3.2.0 [October 16, 2014]
+=====================================
+
+Enhancements:
+
+   -  Added version string in NED trace. Grep for 'NED VERSION:'
+
+   -  Added support for show commands under live-status exec show, e.g.
+      devices device asr9k live-status exec show running-config.
+      (Issue tracker: #16334)
+
+   -  Added transaction ID's unique string, restoring check-sync.
+      (Issue tracker: #15945)
+
+   -  YANG data model updates
+       interface * / ip address * secondary
+      (Issue tracker: #16062)
+
+   -  YANG data model updates
+       snmp-server / user *
+
+   -  YANG data model interface updates
+       interface tunnel-te * / path-option
+       interface * / transport-mode
+
+   -  YANG data routing router model updates
+       router bgp
+       router isis
+       router ospf
+       router pim
+
+   -  YANG data routing model updates
+       l2vpn / bridge group * / bridge-domain *
+
+   -  YANG data routing model updates
+       rsvp
+      (Issue tracker: #16052)
+
+   -  YANG data routing model updates
+       l2vpn / xconnect / mp2mp / autodiscovery / bgp / rd
+      (Issue tracker: #16011)
+
+   -  YANG data routing model updates
+       interface tunnel-ip *
+       mpls
+       l2vpn
+
+   -  Changed from NedCliBase to NedCliBaseTemplate in Java implementation
+      for southbound address binding and public key auth support.
+
+Corrections:
+
+   -  API CHANGE:
+      YANG route-policy contents to single quoted string, e.g.:
+       route-policy
+         "if (xxx) then \r\n statement(s) \r\n endif\r\n"
+        end-policy
+      !
+      (Issue tracker #16500)
+
+This NED does require NCS version 3.0.1 or later.
+
+
+cisco-iosxr v3.0 [March 4, 2014]
+================================
+
+This release is function wise equivalent to the previous release, which was 1.7.
+The only difference is that this NED now is maintained using
+a new product life-cycle which is independent of the NCS release life-cycle.
+
+The version number 3.0 has been chosen to indicate a common baseline for
+all NEDs, which is higher than any previous NED version.
+
+Non-backwards compatible corrections:
+
+  - This NED was formerly named "cisco-ios-xr". It has now been renamed to
+    "cisco-iosxr" according to the new naming convention.
+    When replacing older cisco-ios-xr NED with this version the old directory
+    needs to be removed. Existing CDB data is not affected by this change.
+
+
+=====================================================================
+The Tail-f package: cisco-iosxr NED was initially imported 2014-02-25

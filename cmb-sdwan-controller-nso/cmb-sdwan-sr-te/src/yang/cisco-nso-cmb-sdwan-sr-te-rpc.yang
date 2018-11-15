@@ -1,0 +1,78 @@
+submodule cisco-nso-cmb-sdwan-sr-te-rpc {
+    belongs-to cisco-nso-cmb-sdwan-sr-te {
+        prefix ncsw;
+    }
+    import tailf-ncs { prefix ncs; }
+    import tailf-common { prefix tailf; }
+    import ietf-yang-types { prefix yang; }
+    import ietf-inet-types { prefix inet; }
+    import tailf-ned-cisco-ios-xr { prefix cisco-ios-xr; }
+
+    revision 2018-08-06 {
+        description "Initial revision";
+    }
+
+    rpc validate-interface-status {
+        tailf:actionpoint validate-interface-status;
+        input {
+            list device {
+                min-elements 1;
+                key name;
+                leaf name {
+                    type leafref {
+                        path "/ncs:devices/ncs:device/ncs:name";
+                    }
+                }
+                leaf-list interface {
+                    min-elements 1;
+                    type string;
+                }
+            }
+        }
+        output {
+            leaf result {
+                type boolean;
+            }
+            list device {
+                key name;
+                leaf name {
+                    type leafref {
+                        path "/ncs:devices/ncs:device/ncs:name";
+                    }
+                }
+                leaf info {
+                    type string;
+                }
+                list interface {
+                    key name;
+                    leaf name {
+                        type string;
+                    }
+                    leaf state {
+                        type enumeration {
+                            enum ok;
+                            enum ng;
+                            enum unknown;
+                        }
+                    }
+                    container raw {
+                        leaf ip-address {
+                            type string ;
+                        }
+                        leaf status {
+                            type string;
+                        }
+
+                        leaf protocol {
+                            type string;
+                        }
+
+                        leaf vrf-name {
+                            type string;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

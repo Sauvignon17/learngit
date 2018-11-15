@@ -1,0 +1,21 @@
+<!-- {$DEVICE_NAME} -->
+<!-- {$SBFD_REMOTE_TARGET} -->
+<!-- {$SBFD_REMOTE_DISCRIMINATOR} -->
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+	<devices xmlns="http://tail-f.com/ns/ncs">
+		<device tags="nocreate">
+			<name>{$DEVICE_NAME}</name>
+			<config>
+				<sbfd xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge">
+					<remote-target>
+						<ipv4>
+							<address>{$SBFD_REMOTE_TARGET}</address>
+							<remote-discriminator>{$SBFD_REMOTE_DISCRIMINATOR}
+							</remote-discriminator>
+						</ipv4>
+					</remote-target>
+				</sbfd>
+			</config>
+		</device>
+	</devices>
+</config-template>

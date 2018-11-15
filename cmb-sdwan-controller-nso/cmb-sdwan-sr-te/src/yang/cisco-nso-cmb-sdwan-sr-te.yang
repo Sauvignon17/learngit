@@ -1,0 +1,111 @@
+module cisco-nso-cmb-sdwan-sr-te {
+    namespace "http://cisco.com/ns/nso-cmb-sdwan-sr-te";
+    prefix "ncsw";
+
+    include "cisco-nso-cmb-sdwan-sr-te-rpc";
+    import tailf-ncs { prefix ncs; }
+    import tailf-common { prefix tailf; }
+    import ietf-yang-types { prefix yang; }
+    import ietf-inet-types { prefix inet; }
+    import tailf-ned-cisco-ios-xr { prefix cisco-ios-xr; }
+
+    revision 2018-08-06 {
+        description "Initial revision";
+    }
+
+    augment /ncs:devices/ncs:device {
+        container lsps {
+            list lsp {
+                uses ncs:service-data;
+                ncs:servicepoint cisco-nso-cmb-sdwan-servicepoint;
+                key id;
+                leaf id {
+                    tailf:info "Tunnel-te interface id";
+                    type uint16 {
+                        tailf:info "<0-65535>";
+                    }
+                }
+                leaf destination {
+                    tailf:info "The device host name that is the destination of the LSP";
+                    mandatory true;
+                    must "../../../ncs:name !=current()";
+                    type leafref {
+                        path "/ncs:devices/ncs:device/ncs:name";
+                    }
+                }
+
+                container loopback-ids {
+                    leaf source-loopback-id {
+                        tailf:info "Source loopback interface id";
+                        type leafref {
+                            path "../../../../ncs:config/cisco-ios-xr:interface/cisco-ios-xr:Loopback/cisco-ios-xr:id";
+                        }
+                    }
+                    leaf destination-loopback-id {
+                        tailf:info "Destination loopback interface id";
+                        type leafref {
+                            path "deref(../../destination)/../ncs:config/cisco-ios-xr:interface/cisco-ios-xr:Loopback/cisco-ios-xr:id";
+                        }
+                    }
+                }
+
+                leaf forward-class {
+                    type leafref {
+                        path "../../../ncs:config/cisco-ios-xr:policy-map/cisco-ios-xr:class/cisco-ios-xr:class-ref/cisco-ios-xr:set/cisco-ios-xr:forward-class";
+                    }
+                }
+
+                container bfd {
+                    tailf:info "Configure BFD parameters";
+                    presence true;
+
+                    leaf multiplier {
+                    	mandatory true;
+                        tailf:info "Detect multiplier";
+                        type uint8 {	
+                            tailf:info "3-10;;Detect multiplier (default 3)";
+                            range "3..10";
+                        }
+                    }
+
+                    leaf minimum-interval {
+                    	mandatory true;
+                        tailf:info "Hello interval";
+                        type uint16 {
+                            tailf:info "3-30000;;Hello interval in milliseconds (default 100)";
+                            range "3..30000";
+                        }
+                    }
+                }
+                container explicit-paths {
+                    list explict-path {
+                        key name;
+                        unique path-option-index;
+                        leaf name {
+                            type string;
+                        }
+                        leaf path-option-index {
+                            mandatory true;
+                            type uint16;
+                        }
+                        container hops {
+                            list hop {
+                                min-elements 1;
+                                key index;
+                                leaf index {
+                                    type uint16 {
+                                        range "1..65535";
+                                    }
+                                }
+                                leaf ip {
+                                    mandatory true;
+                                    type inet:ipv4-address;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

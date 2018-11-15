@@ -1,0 +1,28 @@
+<!-- {$DEVICE_NAME} -->
+<!-- {$TUNNEL_ID} -->
+<!-- {$TUNNEL_PATH_OPTION_INDEX} -->
+<!-- {$EXPLICIT_PATH_NAME} -->
+
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+	<devices xmlns="http://tail-f.com/ns/ncs">
+		<device tags="nocreate">
+			<name>{$DEVICE_NAME}</name>
+			<config>
+				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+					<tunnel-te tags="merge">
+						<id>{$TUNNEL_ID}</id>
+						<path-option>
+							<preference-priority>
+								{$TUNNEL_PATH_OPTION_INDEX}
+							</preference-priority>
+							<explicit>
+								<name>{$EXPLICIT_PATH_NAME}</name>
+							</explicit>
+							<segment-routing />
+						</path-option>
+					</tunnel-te>
+				</interface>
+			</config>
+		</device>
+	</devices>
+</config-template>

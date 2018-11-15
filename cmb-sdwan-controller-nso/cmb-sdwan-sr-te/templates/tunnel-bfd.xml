@@ -1,0 +1,25 @@
+<!-- {$DEVICE_NAME} -->
+<!-- {$TUNNEL_ID} -->
+<!-- {$TUNNEL_BFD_MUTIPLIER} -->
+<!-- {$TUNNEL_BFD_MINIMUM_INTERVAL} -->
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+	<devices xmlns="http://tail-f.com/ns/ncs">
+		<device tags="nocreate">
+			<name>{$DEVICE_NAME}</name>
+			<config>
+				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+					<tunnel-te tags="merge">
+						<id>{$TUNNEL_ID}</id>
+						<bfd>
+							<multiplier>{$TUNNEL_BFD_MUTIPLIER}</multiplier>
+							<fast-detect>
+								<sbfd />
+							</fast-detect>
+							<minimum-interval>{$TUNNEL_BFD_MINIMUM_INTERVAL}</minimum-interval>
+						</bfd>
+					</tunnel-te>
+				</interface>
+			</config>
+		</device>
+	</devices>
+</config-template>
